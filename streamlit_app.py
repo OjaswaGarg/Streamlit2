@@ -18,9 +18,7 @@ from recordlinkage.preprocessing import phonetic
 from recordlinkage import Compare
 from sklearn.metrics import plot_confusion_matrix, plot_roc_curve, plot_precision_recall_curve
 from sklearn.metrics import precision_score, recall_score
-import plotly.figure_factory as ff
-import plotly.graph_objects as go
-import plotly.express as px
+
 header=st.container()
 dataset=st.container()
 features=st.container()
