@@ -24,6 +24,8 @@ dataset=st.container()
 features=st.container()
 model_training=st.container()
 faker_data=st.container()
+subprocess.check_call([sys.executable, '-m', 'pip', 'install','snorkel'])
+import snorkel
 from snorkel.labeling import labeling_function
 from snorkel.labeling import PandasLFApplier
 from snorkel.labeling import LFAnalysis
