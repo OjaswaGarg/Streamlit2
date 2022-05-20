@@ -4,6 +4,7 @@ import sys
 import subprocess
 subprocess.check_call([sys.executable, '-m', 'pip', 'install','faker'])
 from faker import Faker
+subprocess.check_call([sys.executable, '-m', 'pip', 'install','seaborn'])
 import seaborn as sns
 import recordlinkage
 from sklearn.linear_model import LogisticRegression
