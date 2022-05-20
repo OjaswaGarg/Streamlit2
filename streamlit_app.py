@@ -1,5 +1,8 @@
 import streamlit as st
 import pandas as pd
+import sys
+import subprocess
+subprocess.check_call([sys.executable, '-m', 'pip', 'install','faker'])
 from faker import Faker
 import seaborn as sns
 import recordlinkage
