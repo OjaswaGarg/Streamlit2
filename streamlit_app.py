@@ -2,11 +2,16 @@ import streamlit as st
 import pandas as pd
 import sys
 import subprocess
-subprocess.check_call([sys.executable, '-m', 'pip', 'install','faker'])
+def import_or_install(package):
+    try:
+        __import__(package)
+    except ImportError:
+        subprocess.check_call([sys.executable, '-m', 'pip', 'install','faker'])
+import_or_install("faker")
 from faker import Faker
-subprocess.check_call([sys.executable, '-m', 'pip', 'install','seaborn'])
+import_or_install("seaborn")
 import seaborn as sns
-subprocess.check_call([sys.executable, '-m', 'pip', 'install','recordlinkage'])
+import_or_install("recordlinkage")
 import recordlinkage
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
@@ -18,14 +23,14 @@ from recordlinkage.preprocessing import phonetic
 from recordlinkage import Compare
 from sklearn.metrics import plot_confusion_matrix, plot_roc_curve, plot_precision_recall_curve
 from sklearn.metrics import precision_score, recall_score
+import_or_install("snorkel")
+import snorkel
 
 header=st.container()
 dataset=st.container()
-features=st.container()
+featurest=st.container()
 model_training=st.container()
 faker_data=st.container()
-subprocess.check_call([sys.executable, '-m', 'pip', 'install','snorkel'])
-import snorkel
 from snorkel.labeling import labeling_function
 from snorkel.labeling import PandasLFApplier
 from snorkel.labeling import LFAnalysis
@@ -156,7 +161,7 @@ models=st.sidebar.selectbox("How would you like to data to be modeled?",("Gradie
 
 metrics = st.sidebar.multiselect("What metrics to plot?", ("Confusion Matrix", "ROC Curve", "Precision-Recall Curve"))
 
-@st.cache()
+@st.cache(allow_output_mutation=True)
 def data():
     dfA, dfB, true_links = load_febrl4(return_links=True)
     dfA["phonetic_given_name"] = phonetic(dfA["given_name"], "soundex")
@@ -171,7 +176,8 @@ def data():
     dfB["soc_sec_id"] = dfB["soc_sec_id"].str.replace('-', "")
     dfA['address']=dfA['street_number']+" "+dfA['address_1']+" "+dfA['address_2']
     dfB['address']=dfB['street_number']+" "+dfB['address_1']+" "+dfB['address_2'] 
-    return dfA,dfB,true_links 
+    features=data1(dfA,dfB,"initials")
+    return dfA,dfB,true_links,features
 with header:
 	st.title("Welcome to Record Linkage")
     
@@ -179,16 +185,14 @@ with header:
 
 with dataset:
     st.header("Data from Record Linkage Package")
-    dfA, dfB, true_links=data()
+    dfA, dfB, true_links,features=data()
     st.markdown("Few Lines of Data")
     st.write(dfA.head(5))  
 
-with  features:
+with  featurest:
     st.header("Modelling Features")
-    features=data1(dfA,dfB,"initials")
     features['Target']=features.index.isin(true_links)
     features['Target']=features['Target'].astype(int)
-    
     data=features.reset_index(drop=True)
     X=data.drop(['Target'],axis=1)
     Y=data['Target']
