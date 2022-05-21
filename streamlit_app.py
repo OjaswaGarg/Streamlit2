@@ -86,7 +86,8 @@ def address(x):
 @labeling_function()
 def address_rev(x):
     return NOMATCH if  x.address<0.2 else UNKNOWN   
-
+lfs = [soc_sec, address,soc_sec_rev, name_rev, address_rev,name_date]
+applier = PandasLFApplier(lfs=lfs)
 def plot_metrics(model,metrics_list,x_test,y_test):
     if "Confusion Matrix" in metrics_list:
         st.subheader("Confusion Matrix")
@@ -161,7 +162,7 @@ models=st.sidebar.selectbox("How would you like to data to be modeled?",("Gradie
 
 metrics = st.sidebar.multiselect("What metrics to plot?", ("Confusion Matrix", "ROC Curve", "Precision-Recall Curve"))
 
-@st.cache(allow_output_mutation=True)
+@st.cache(allow_output_mutation=True,suppress_st_warning=True)
 def data():
     dfA, dfB, true_links = load_febrl4(return_links=True)
     dfA["phonetic_given_name"] = phonetic(dfA["given_name"], "soundex")
@@ -204,12 +205,10 @@ with  featurest:
     y_train_dst=y_train.value_counts()
     st.markdown("Matches and Non Matches Distribution in Train Data")
     st.write(y_train_dst)
-    
-with  model_training:
-    if models=="Gradient Boosting":
-        st.header("Applying Gradient Boosting to Model")
-        n_estimators=st.slider("What would be the number of estimators of the model?", min_value=10,max_value=100,value=10,step=10)
-        max_depth=st.slider("What would be the max_depth of the model?", min_value=1,max_value=10,value=1,step=1)
+
+@st.cache(suppress_st_warning=True)
+def Gradient(n_estimators,max_depth):
+        global metrics
         clf = GradientBoostingClassifier(n_estimators=n_estimators, learning_rate=0.1,max_depth=max_depth, random_state=42).fit(X_train, y_train)
         y_pred=clf.predict(X_test)
         plot1=pd.DataFrame()
@@ -218,18 +217,13 @@ with  model_training:
         plot1 = plot1.set_index('Features')
         st.bar_chart(plot1)
         model_final=clf
-        st.markdown("Performance of Model on Test Data")
         y_pred=model_final.predict(X_test)
         accuracy = model_final.score(X_test, y_test)
         y_pred = model_final.predict(X_test)
-        st.write("Accuracy: ", accuracy.round(2))
-        st.write("Precision: ", precision_score(y_test, y_pred, labels=class_names).round(2))
-        st.write("Recall: ", recall_score(y_test, y_pred, labels=class_names).round(2)) 
-        plot_metrics(model_final,metrics,X_test,y_test)        
-    elif models=="Logistic Regression":
-        st.header("Applying Logistic Regression to Model")
-        penalty=st.select_slider('Select penalty type',options=['l1', 'l2', 'elasticnet', 'none'],value=('l2'))
-        C=st.slider("What would be the value of C(Inverse of regularization strength)?", min_value=0.1,max_value=2.0,value=1.0,step=0.1)
+        return accuracy,model_final,X_test,y_test,y_pred
+@st.cache(suppress_st_warning=True)
+def Logistic(penalty,C):
+        global metrics
         lr=LogisticRegression(class_weight="balanced",penalty=penalty,C=C,solver="saga", l1_ratio=0.5)
         lr.fit(X_train,y_train)
         y_pred=lr.predict(X_train)
@@ -240,26 +234,16 @@ with  model_training:
         plot1 = plot1.set_index('Features')
         st.bar_chart(plot1)
         model_final=lr
-        st.markdown("Performance of Model on Test Data")
         y_pred=model_final.predict(X_test)
         accuracy = model_final.score(X_test, y_test)
         y_pred = model_final.predict(X_test)
-        st.write("Accuracy: ", accuracy.round(2))
-        st.write("Precision: ", precision_score(y_test, y_pred, labels=class_names).round(2))
-        st.write("Recall: ", recall_score(y_test, y_pred, labels=class_names).round(2)) 
-        plot_metrics(model_final,metrics,X_test,y_test)
-    elif models=="Weak Supervision":
-       st.header("Applying Snorkel to Model")
-       data=features
-       df = data.sample(frac=1)
-       X_train=df.head(int(len(df)*0.8))
-       X_test=df.tail(int(len(df)*0.2)) 
-       lfs = [soc_sec, address,soc_sec_rev, name_rev, address_rev,name_date]
-       applier = PandasLFApplier(lfs=lfs)
+        return accuracy,model_final,X_test,y_test,y_pred
+@st.cache(suppress_st_warning=True)
+def WS(X_train,X_test,model_type):
+       global metrics
        L_train = applier.apply(df=X_train)
        st.write(LFAnalysis(L=L_train, lfs=lfs).lf_summary())
        L_test = applier.apply(df=X_test)
-       model_type=st.select_slider('Select model type',options=['MajorityLabelVoter', 'LabelModel'],value=('LabelModel'))
        if model_type=="MajorityLabelVoter":
            model_final = MajorityLabelVoter()
            accuracy = model_final.score(L=L_test, Y=X_test.Target, tie_break_policy="random")["accuracy"]
@@ -278,12 +262,42 @@ with  model_training:
            cm=cm/len(X_test.CLASS)
            fig = plt.figure(figsize=(10, 8))
            sns.heatmap(cm*100, annot=True,annot_kws={"size": 16})
-           st.pyplot(fig)
-           
+           st.pyplot(fig) 
+       return  model_final,X_test,y_test   
+    
+with  model_training:
+    if models=="Gradient Boosting":
+        st.header("Applying Gradient Boosting to Model")
+        n_estimators=st.slider("What would be the number of estimators of the model?", min_value=10,max_value=100,value=10,step=10)
+        max_depth=st.slider("What would be the max_depth of the model?", min_value=1,max_value=10,value=1,step=1)
+        accuracy,model_final,X_test,y_test,y_pred=Gradient(n_estimators,max_depth)
+        st.markdown("Performance of Model on Test Data")
+        st.write("Accuracy: ", accuracy.round(2))
+        st.write("Precision: ", precision_score(y_test, y_pred, labels=class_names).round(2))
+        st.write("Recall: ", recall_score(y_test, y_pred, labels=class_names).round(2)) 
+        plot_metrics(model_final,metrics,X_test,y_test)
+    elif models=="Logistic Regression":
+        st.header("Applying Logistic Regression to Model")
+        penalty=st.select_slider('Select penalty type',options=['l1', 'l2', 'elasticnet', 'none'],value=('l2'))
+        C=st.slider("What would be the value of C(Inverse of regularization strength)?", min_value=0.1,max_value=2.0,value=1.0,step=0.1)        
+        accuracy,model_final,X_test,y_test,y_pred=Logistic(penalty,C)
+        st.markdown("Performance of Model on Test Data")
+        st.write("Accuracy: ", accuracy.round(2))
+        st.write("Precision: ", precision_score(y_test, y_pred, labels=class_names).round(2))
+        st.write("Recall: ", recall_score(y_test, y_pred, labels=class_names).round(2)) 
+        plot_metrics(model_final,metrics,X_test,y_test)
+    elif models=="Weak Supervision":
+       model_type=st.select_slider('Select model type',options=['MajorityLabelVoter', 'LabelModel'],value=('LabelModel'))
+       st.header("Applying Snorkel to Model")
+       data=features
+       df = data.sample(frac=1)
+       X_train=df.head(int(len(df)*0.8))
+       X_test=df.tail(int(len(df)*0.2)) 
+       model_final,X_test,y_test =WS(X_train,X_test,model_type)
 
-with faker_data:
-    st.header("Running Model on Faker Data")
-    sample_size=st.slider("What would be the sample size of Fake Data?", min_value=1000,max_value=15000,value=5000,step=1000)
+
+@st.cache(suppress_st_warning=True,allow_output_mutation=True)
+def faker_gn(sample_size):
     data_sample=data_creation(entries=sample_size)
     dfA1=data_sample
     dfB1=data_sample
@@ -300,7 +314,12 @@ with faker_data:
     dfA1['address']=dfA1['street_number']+" "+dfA1['address_1']+" "+dfA1['address_2']
     dfB1['address']=dfB1['street_number']+" "+dfB1['address_1']+" "+dfB1['address_2']
     features1=data1(dfA1,dfB1,"initials")
-    
+    return dfA1,dfB1,features1    
+with faker_data:
+    st.header("Running Model on Faker Data")
+    sample_size=st.slider("What would be the sample size of Fake Data?", min_value=1000,max_value=15000,value=5000,step=1000)
+    dfA1,dfB1,featuressour =faker_gn(sample_size)
+    features1=featuressour.copy()
     Match_Rate=st.slider("What would be the Probabilty Match Rate?", min_value=0.1,max_value=1.0,value=0.1,step=0.1)
     Display_Matches=st.slider("How many top Macthes to display?", min_value=1,max_value=10,value=5,step=1)
     if models=="Gradient Boosting" or models=="Logistic Regression":
