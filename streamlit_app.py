@@ -6,7 +6,7 @@ def import_or_install(package):
     try:
         __import__(package)
     except ImportError:
-        subprocess.check_call([sys.executable, '-m', 'pip', 'install','faker'])
+        subprocess.check_call([sys.executable, '-m', 'pip', 'install',package])
 import_or_install("faker")
 from faker import Faker
 import_or_install("seaborn")
@@ -242,28 +242,16 @@ def Logistic(penalty,C):
 def WS(X_train,X_test,model_type):
        global metrics
        L_train = applier.apply(df=X_train)
-       st.write(LFAnalysis(L=L_train, lfs=lfs).lf_summary())
        L_test = applier.apply(df=X_test)
        if model_type=="MajorityLabelVoter":
            model_final = MajorityLabelVoter()
-           accuracy = model_final.score(L=L_test, Y=X_test.Target, tie_break_policy="random")["accuracy"]
-           st.write("Accuracy: ", accuracy.round(2))
+           accuracy = model_final.score(L=L_test, Y=X_test.Target, tie_break_policy="random")["accuracy"] 
        else:
            model_final = LabelModel(cardinality=3, verbose=True)
            model_final.fit(L_train=L_train, n_epochs=500, log_freq=100, seed=42)
            accuracy = model_final.score(L=L_test, Y=X_test.Target, tie_break_policy="abstain")["accuracy"]
-           st.write("Accuracy: ", accuracy.round(2))
        sol=model_final.predict(L_test)
-       X_test['CLASS']=sol
-       X_test=X_test.loc[(X_test.CLASS==0) | (X_test.CLASS==1)]
-       if "Confusion Matrix" in metrics:
-           st.subheader("Confusion Matrix")
-           cm=confusion_matrix(X_test.Target,X_test.CLASS)
-           cm=cm/len(X_test.CLASS)
-           fig = plt.figure(figsize=(10, 8))
-           sns.heatmap(cm*100, annot=True,annot_kws={"size": 16})
-           st.pyplot(fig) 
-       return  model_final,X_test,y_test   
+       return  model_final,sol,y_test,accuracy,L_train
     
 with  model_training:
     if models=="Gradient Boosting":
@@ -287,13 +275,25 @@ with  model_training:
         st.write("Recall: ", recall_score(y_test, y_pred, labels=class_names).round(2)) 
         plot_metrics(model_final,metrics,X_test,y_test)
     elif models=="Weak Supervision":
-       model_type=st.select_slider('Select model type',options=['MajorityLabelVoter', 'LabelModel'],value=('LabelModel'))
        st.header("Applying Snorkel to Model")
+       model_type=st.select_slider('Select model type',options=['MajorityLabelVoter', 'LabelModel'],value=('LabelModel'))
        data=features
        df = data.sample(frac=1)
        X_train=df.head(int(len(df)*0.8))
        X_test=df.tail(int(len(df)*0.2)) 
-       model_final,X_test,y_test =WS(X_train,X_test,model_type)
+       model_final,sol,y_test,accuracy,L_train =WS(X_train,X_test,model_type)
+       st.write(LFAnalysis(L=L_train, lfs=lfs).lf_summary())
+       st.write("Accuracy: ", accuracy.round(2))
+       X_test1=X_test.copy()
+       X_test1['CLASS']=sol
+       X_test1=X_test1.loc[(X_test1.CLASS==0) | (X_test1.CLASS==1)]
+       if "Confusion Matrix" in metrics:
+           st.subheader("Confusion Matrix")
+           cm=confusion_matrix(X_test1.Target,X_test1.CLASS)
+           cm=cm/len(X_test1.CLASS)
+           fig = plt.figure(figsize=(10, 8))
+           sns.heatmap(cm*100, annot=True,annot_kws={"size": 16})
+           st.pyplot(fig) 
 
 
 @st.cache(suppress_st_warning=True,allow_output_mutation=True)
@@ -320,13 +320,13 @@ with faker_data:
     sample_size=st.slider("What would be the sample size of Fake Data?", min_value=1000,max_value=15000,value=5000,step=1000)
     dfA1,dfB1,featuressour =faker_gn(sample_size)
     features1=featuressour.copy()
-    Match_Rate=st.slider("What would be the Probabilty Match Rate?", min_value=0.1,max_value=1.0,value=0.1,step=0.1)
-    Display_Matches=st.slider("How many top Macthes to display?", min_value=1,max_value=10,value=5,step=1)
     if models=="Gradient Boosting" or models=="Logistic Regression":
         input1=features1
     else:
         L_fake = applier.apply(df=features1)
-        input1=L_fake        
+        input1=L_fake 
+    Match_Rate=st.slider("What would be the Probabilty Match Rate?", min_value=0.1,max_value=1.0,value=0.1,step=0.1)
+    Display_Matches=st.slider("How many top Macthes to display?", min_value=1,max_value=10,value=5,step=1)    
     features1['Match']=model_final.predict_proba(input1)[:,1]
     features1.reset_index(inplace=True)
     features1=features1[features1["level_0"]!=features1["level_1"]]
