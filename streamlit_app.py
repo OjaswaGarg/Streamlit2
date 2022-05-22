@@ -232,8 +232,8 @@ def data():
 
 
 with header:
-    r= requests.get("https://miro.medium.com/max/1400/1*VSMuHlqP5FFzhbymr0gOSQ.png", stream=True)
-    image = Image.open(r.raw)
+    #r= requests.get("https://miro.medium.com/max/1400/1*VSMuHlqP5FFzhbymr0gOSQ.png", stream=True)
+    image = Image.open('Picture1.png')
     st.image(image, width=600  ,caption='Record Linkage', use_column_width=True)
     st.markdown('<p class="font11">Welcome to Record Linkage</p>',unsafe_allow_html=True)
     
