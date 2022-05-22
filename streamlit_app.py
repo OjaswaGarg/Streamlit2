@@ -211,11 +211,6 @@ def Gradient(n_estimators,max_depth):
         global metrics
         clf = GradientBoostingClassifier(n_estimators=n_estimators, learning_rate=0.1,max_depth=max_depth, random_state=42).fit(X_train, y_train)
         y_pred=clf.predict(X_test)
-        plot1=pd.DataFrame()
-        plot1['Features']=list(X_train.columns)
-        plot1['Importance']=clf.feature_importances_
-        plot1 = plot1.set_index('Features')
-        st.bar_chart(plot1)
         model_final=clf
         y_pred=model_final.predict(X_test)
         accuracy = model_final.score(X_test, y_test)
@@ -226,13 +221,6 @@ def Logistic(penalty,C):
         global metrics
         lr=LogisticRegression(class_weight="balanced",penalty=penalty,C=C,solver="saga", l1_ratio=0.5)
         lr.fit(X_train,y_train)
-        y_pred=lr.predict(X_train)
-        y_pred1=lr.predict(X_test)
-        plot1=pd.DataFrame()
-        plot1['Features']=list(X_train.columns)
-        plot1['Importance']=lr.coef_[0]
-        plot1 = plot1.set_index('Features')
-        st.bar_chart(plot1)
         model_final=lr
         y_pred=model_final.predict(X_test)
         accuracy = model_final.score(X_test, y_test)
@@ -259,6 +247,11 @@ with  model_training:
         n_estimators=st.slider("What would be the number of estimators of the model?", min_value=10,max_value=100,value=10,step=10)
         max_depth=st.slider("What would be the max_depth of the model?", min_value=1,max_value=10,value=1,step=1)
         accuracy,model_final,X_test,y_test,y_pred=Gradient(n_estimators,max_depth)
+        plot1=pd.DataFrame()
+        plot1['Features']=list(X_train.columns)
+        plot1['Importance']=model_final.feature_importances_
+        plot1 = plot1.set_index('Features')
+        st.bar_chart(plot1)
         st.markdown("Performance of Model on Test Data")
         st.write("Accuracy: ", accuracy.round(2))
         st.write("Precision: ", precision_score(y_test, y_pred, labels=class_names).round(2))
@@ -269,6 +262,11 @@ with  model_training:
         penalty=st.select_slider('Select penalty type',options=['l1', 'l2', 'elasticnet', 'none'],value=('l2'))
         C=st.slider("What would be the value of C(Inverse of regularization strength)?", min_value=0.1,max_value=2.0,value=1.0,step=0.1)        
         accuracy,model_final,X_test,y_test,y_pred=Logistic(penalty,C)
+        plot1=pd.DataFrame()
+        plot1['Features']=list(X_train.columns)
+        plot1['Importance']=model_final.coef_[0]
+        plot1 = plot1.set_index('Features')
+        st.bar_chart(plot1)
         st.markdown("Performance of Model on Test Data")
         st.write("Accuracy: ", accuracy.round(2))
         st.write("Precision: ", precision_score(y_test, y_pred, labels=class_names).round(2))
