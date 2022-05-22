@@ -13,7 +13,7 @@ from PIL import Image
 import_or_install("requests")
 import requests
 #r= requests.get("https://upload.wikimedia.org/wikipedia/en/thumb/7/79/University_of_Chicago_shield.svg/195px-University_of_Chicago_shield.svg.png", stream=True)
-im = Image.open("Logo1.png')
+im = Image.open('Logo1.png')
 
 from faker import Faker
 import_or_install("seaborn")
