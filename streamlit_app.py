@@ -8,6 +8,13 @@ def import_or_install(package):
     except ImportError:
         subprocess.check_call([sys.executable, '-m', 'pip', 'install',package])
 import_or_install("faker")
+import_or_install("PIL")
+from PIL import Image
+import_or_install("requests")
+import requests
+r= requests.get("https://upload.wikimedia.org/wikipedia/en/thumb/7/79/University_of_Chicago_shield.svg/195px-University_of_Chicago_shield.svg.png", stream=True)
+im = Image.open(r.raw)
+
 from faker import Faker
 import_or_install("seaborn")
 import seaborn as sns
@@ -25,6 +32,12 @@ from sklearn.metrics import plot_confusion_matrix, plot_roc_curve, plot_precisio
 from sklearn.metrics import precision_score, recall_score
 import_or_install("snorkel")
 import snorkel
+st.set_page_config(
+    page_title="Record_Linkage",
+    page_icon=im,
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 
 header=st.container()
 dataset=st.container()
@@ -38,21 +51,58 @@ from snorkel.labeling.model import MajorityLabelVoter
 from snorkel.labeling.model import LabelModel
 
 st.set_option('deprecation.showPyplotGlobalUse', False)
+    
+
 st.markdown(
-        f"""
-<style>
-    .reportview-container .main .block-container{{
-        max-width: 90%;
-        padding-top: 5rem;
-        padding-right: 5rem;
-        padding-left: 5rem;
-        padding-bottom: 5rem;
-    }}
-    img{{
-    	max-width:40%;
-    	margin-bottom:40px;
-    }}
-</style>
+   """ <style> 
+   .font2 {
+font-family:"Segoe UI";
+    font-size: 160%;
+    color:#000000;    
+    line-height: 100%;
+    background-color: #FBCEB1;
+    padding: 0.4em;
+    letter-spacing: -0.05em;
+    word-break: normal;
+    border-radius: 10px;
+    } 
+      .font11 {
+font-family:"Segoe UI";
+    font-size: 250%;
+    color:#FFFFFF;    
+    line-height: 100%;
+    background-color: #06038D;
+    padding: 0.4em;
+    letter-spacing: -0.05em;
+    word-break: normal;
+    border-radius: 10px;
+    } 
+    .font1 {
+font-family:"Segoe UI";
+    font-size: 160%;
+    color:#00FFFF;    
+    line-height: 100%;
+    background-color: #36454F;
+    padding: 0.4em;
+    letter-spacing: -0.05em;
+    word-break: normal;
+    border-radius: 5px;
+}
+        .font3 {
+font-family:"Segoe UI";
+    font-size: 100%;
+    color:#000000;    
+    font-weight: 600;
+    line-height: 100%;
+    background-color: #FFFFFF;
+    padding: 0.4em;
+    letter-spacing: -0.05em;
+    word-break: normal;
+    border-radius: 5px;
+    /font-style: italic;
+}
+</style> 
+
 """,
         unsafe_allow_html=True,
     )
@@ -179,31 +229,37 @@ def data():
     dfB['address']=dfB['street_number']+" "+dfB['address_1']+" "+dfB['address_2'] 
     features=data1(dfA,dfB,"initials")
     return dfA,dfB,true_links,features
+
+
 with header:
-	st.title("Welcome to Record Linkage")
+    r= requests.get("https://miro.medium.com/max/1400/1*VSMuHlqP5FFzhbymr0gOSQ.png", stream=True)
+    image = Image.open(r.raw)
+    st.image(image, width=600  ,caption='Record Linkage', use_column_width=True)
+    st.markdown('<p class="font11">Welcome to Record Linkage</p>',unsafe_allow_html=True)
     
     
 
 with dataset:
-    st.header("Data from Record Linkage Package")
+    st.markdown('<p class="font2">Data from Record Linkage Package</p>', unsafe_allow_html=True)
     dfA, dfB, true_links,features=data()
-    st.markdown("Few Lines of Data")
+    st.markdown('<p class="font3">Few Lines of Data', unsafe_allow_html=True)
     st.write(dfA.head(5))  
 
 with  featurest:
-    st.header("Modelling Features")
+    st.markdown('<p class="font2">Modelling Features</p>', unsafe_allow_html=True)
+    
     features['Target']=features.index.isin(true_links)
     features['Target']=features['Target'].astype(int)
     data=features.reset_index(drop=True)
     X=data.drop(['Target'],axis=1)
     Y=data['Target']
     X_train,X_test,y_train,y_test=train_test_split(X,Y,random_state=42,test_size=0.2)
-    st.markdown("Input train Dataset")
+    st.markdown('<p class="font3">Input train Dataset', unsafe_allow_html=True)
     st.write(X_train[:5])
-    st.markdown("Actual Output train Dataset")
+    st.markdown('<p class="font3">Actual Output train Dataset', unsafe_allow_html=True)
     st.write(y_train[:5])
     y_train_dst=y_train.value_counts()
-    st.markdown("Matches and Non Matches Distribution in Train Data")
+    st.markdown('<p class="font3">Matches and Non Matches Distribution in Train Data', unsafe_allow_html=True)
     st.write(y_train_dst)
 
 @st.cache(suppress_st_warning=True)
@@ -243,7 +299,7 @@ def WS(X_train,X_test,model_type):
     
 with  model_training:
     if models=="Gradient Boosting":
-        st.header("Applying Gradient Boosting to Model")
+        st.markdown('<p class="font2">Applying Gradient Boosting to Model</p>', unsafe_allow_html=True)
         n_estimators=st.slider("What would be the number of estimators of the model?", min_value=10,max_value=100,value=10,step=10)
         max_depth=st.slider("What would be the max_depth of the model?", min_value=1,max_value=10,value=1,step=1)
         accuracy,model_final,X_test,y_test,y_pred=Gradient(n_estimators,max_depth)
@@ -252,13 +308,14 @@ with  model_training:
         plot1['Importance']=model_final.feature_importances_
         plot1 = plot1.set_index('Features')
         st.bar_chart(plot1)
-        st.markdown("Performance of Model on Test Data")
+        st.markdown('<p class="font2">Performance of Model on Test Data', unsafe_allow_html=True)
         st.write("Accuracy: ", accuracy.round(2))
         st.write("Precision: ", precision_score(y_test, y_pred, labels=class_names).round(2))
         st.write("Recall: ", recall_score(y_test, y_pred, labels=class_names).round(2)) 
         plot_metrics(model_final,metrics,X_test,y_test)
     elif models=="Logistic Regression":
-        st.header("Applying Logistic Regression to Model")
+        st.markdown('<p class="font2">Applying Logistic Regression to Model</p>', unsafe_allow_html=True)
+    
         penalty=st.select_slider('Select penalty type',options=['l1', 'l2', 'elasticnet', 'none'],value=('l2'))
         C=st.slider("What would be the value of C(Inverse of regularization strength)?", min_value=0.1,max_value=2.0,value=1.0,step=0.1)        
         accuracy,model_final,X_test,y_test,y_pred=Logistic(penalty,C)
@@ -267,13 +324,13 @@ with  model_training:
         plot1['Importance']=model_final.coef_[0]
         plot1 = plot1.set_index('Features')
         st.bar_chart(plot1)
-        st.markdown("Performance of Model on Test Data")
+        st.markdown('<p class="font3">Performance of Model on Test Data', unsafe_allow_html=True)
         st.write("Accuracy: ", accuracy.round(2))
         st.write("Precision: ", precision_score(y_test, y_pred, labels=class_names).round(2))
         st.write("Recall: ", recall_score(y_test, y_pred, labels=class_names).round(2)) 
         plot_metrics(model_final,metrics,X_test,y_test)
     elif models=="Weak Supervision":
-       st.header("Applying Snorkel to Model")
+       st.markdown('<p class="font2">Applying Snorkel to Model</p>', unsafe_allow_html=True)
        model_type=st.select_slider('Select model type',options=['MajorityLabelVoter', 'LabelModel'],value=('LabelModel'))
        data=features
        df = data.sample(frac=1)
@@ -316,7 +373,7 @@ def faker_gn(sample_size):
     features1=data1(dfA1,dfB1,"initials")
     return dfA1,dfB1,features1    
 with faker_data:
-    st.header("Running Model on Faker Data")
+    st.markdown('<p class="font2">Running Model on Faker Data</p>', unsafe_allow_html=True)
     sample_size=st.slider("What would be the sample size of Fake Data?", min_value=1000,max_value=15000,value=5000,step=1000)
     dfA1,dfB1,featuressour =faker_gn(sample_size)
     features1=featuressour.copy()
@@ -331,7 +388,7 @@ with faker_data:
     features1.reset_index(inplace=True)
     features1=features1[features1["level_0"]!=features1["level_1"]]
     show=features1[features1['Match']>=Match_Rate]
-    st.header("Number of Matches")
+    st.markdown('<p class="font2">Number of Matches', unsafe_allow_html=True)
     st.write(len(show)//2)
     show.sort_values(['Match'],ascending=False,inplace=True)
     show=show.reset_index(drop=True)
@@ -340,7 +397,7 @@ with faker_data:
           display+=1
           if display==Display_Matches:
               break
-          st.header("Probability of Matching")
+          st.markdown('<p class="font3">Probability of Matching', unsafe_allow_html=True)
           f1=show.iloc[i]
           st.write(f1["Match"]*100)
           d1=dfA1.iloc[[show['level_0'].values[i],show['level_1'].values[i]]]
