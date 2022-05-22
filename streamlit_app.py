@@ -284,7 +284,7 @@ with  model_training:
        model_final,sol,y_test,accuracy,L_train =WS(X_train,X_test,model_type)
        out1=LFAnalysis(L=L_train, lfs=lfs).lf_summary()
        out1=out1.to_json()
-       st.write(out1)
+       #st.write(out1)
        st.write("Accuracy: ", accuracy.round(2))
        X_test1=X_test.copy()
        X_test1['CLASS']=sol
