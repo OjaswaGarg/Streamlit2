@@ -12,8 +12,8 @@ import_or_install("PIL")
 from PIL import Image
 import_or_install("requests")
 import requests
-r= requests.get("https://upload.wikimedia.org/wikipedia/en/thumb/7/79/University_of_Chicago_shield.svg/195px-University_of_Chicago_shield.svg.png", stream=True)
-im = Image.open(r.raw)
+#r= requests.get("https://upload.wikimedia.org/wikipedia/en/thumb/7/79/University_of_Chicago_shield.svg/195px-University_of_Chicago_shield.svg.png", stream=True)
+im = Image.open('Logo1.png')
 
 from faker import Faker
 import_or_install("seaborn")
@@ -232,8 +232,8 @@ def data():
 
 
 with header:
-    r= requests.get("https://miro.medium.com/max/1400/1*VSMuHlqP5FFzhbymr0gOSQ.png", stream=True)
-    image = Image.open(r.raw)
+    #r= requests.get("https://miro.medium.com/max/1400/1*VSMuHlqP5FFzhbymr0gOSQ.png", stream=True)
+    image = Image.open('Picture1.png')
     st.image(image, width=600  ,caption='Record Linkage', use_column_width=True)
     st.markdown("""# Capstone Project""")
     st.markdown('<p class="font11">Welcome to Record Linkage</p>',unsafe_allow_html=True)
