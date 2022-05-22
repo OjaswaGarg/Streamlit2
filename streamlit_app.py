@@ -56,7 +56,7 @@ st.set_option('deprecation.showPyplotGlobalUse', False)
 st.markdown(
    """ <style> 
    .font2 {
-font-family:"Segoe UI";
+font-family:"serif";
     font-size: 160%;
     color:#000000;    
     line-height: 100%;
@@ -67,7 +67,7 @@ font-family:"Segoe UI";
     border-radius: 10px;
     } 
       .font11 {
-font-family:"Segoe UI";
+font-family:"serif";
     font-size: 250%;
     color:#FFFFFF;    
     line-height: 100%;
@@ -78,7 +78,7 @@ font-family:"Segoe UI";
     border-radius: 10px;
     } 
     .font1 {
-font-family:"Segoe UI";
+font-family:"serif";
     font-size: 160%;
     color:#00FFFF;    
     line-height: 100%;
@@ -89,10 +89,10 @@ font-family:"Segoe UI";
     border-radius: 5px;
 }
         .font3 {
-font-family:"Segoe UI";
+font-family:"serif";
     font-size: 100%;
     color:#000000;    
-    font-weight: 600;
+    font-weight: 300;
     line-height: 100%;
     background-color: #FFFFFF;
     padding: 0.4em;
