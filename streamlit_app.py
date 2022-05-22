@@ -233,8 +233,12 @@ def data():
 
 with header:
     #r= requests.get("https://miro.medium.com/max/1400/1*VSMuHlqP5FFzhbymr0gOSQ.png", stream=True)
-    image = Image.open('Picture1.png')
-    st.image(image, width=600  ,caption='Record Linkage', use_column_width=True)
+    col1, col2 = st.columns(2)
+    with col1:
+        image = Image.open('Picture1.png')
+        st.image(image, width=380)
+    with col2:
+        st.write("Record linkage (also known as data matching, entity resolution, and many other terms) is the task of finding records in a data set that refer to the same entity across different data sources. Record linkage is necessary when joining different data sets based on entities that may or may not share a common identifier, which may be due to differences in record shape, storage location, or curator style or preference.")
     st.markdown("""# Capstone Project""")
     st.markdown('<p class="font11">Welcome to Record Linkage</p>',unsafe_allow_html=True)
     
