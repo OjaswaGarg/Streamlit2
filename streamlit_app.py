@@ -281,7 +281,7 @@ with  model_training:
        X_test=df.tail(int(len(df)*0.2)) 
        model_final,sol,y_test,accuracy,L_train =WS(X_train,X_test,model_type)
        out1=LFAnalysis(L=L_train, lfs=lfs).lf_summary()
-       out1=out1[['Overlaps','Conflicts']]
+       out1=out1[['Coverage','Overlaps','Conflicts']]
        st.write(out1)
        st.write("Accuracy: ", accuracy.round(2))
        X_test1=X_test.copy()
