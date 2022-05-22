@@ -280,6 +280,9 @@ with  model_training:
        X_train=df.head(int(len(df)*0.8))
        X_test=df.tail(int(len(df)*0.2)) 
        model_final,sol,y_test,accuracy,L_train =WS(X_train,X_test,model_type)
+       out1=LFAnalysis(L=L_train,lfs=lfs).lf.summary()
+       out1=out1[['Overlaps','Conflicts']]
+       st.write(out1)
        st.write("Accuracy: ", accuracy.round(2))
        X_test1=X_test.copy()
        X_test1['CLASS']=sol
