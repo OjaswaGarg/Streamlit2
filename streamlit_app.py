@@ -208,7 +208,7 @@ class_names = ["No Match", "Match"]
 st.sidebar.title("Interactive") 
 
 
-models=st.sidebar.selectbox("How would you like to data to be modeled?",("Gradient Boosting", "Logistic Regression", "Weak Supervision"))
+models=st.sidebar.selectbox("How would you like the data to be modeled?",("Gradient Boosting", "Logistic Regression", "Weak Supervision"))
 
 metrics = st.sidebar.multiselect("What metrics to plot?", ("Confusion Matrix", "ROC Curve", "Precision-Recall Curve"))
 
