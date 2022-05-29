@@ -305,8 +305,8 @@ def WS(X_train,X_test,model_type):
 with  model_training:
     if models=="Gradient Boosting":
         st.markdown('<p class="font2">Applying Gradient Boosting to Model</p>', unsafe_allow_html=True)
-        n_estimators=st.slider("What would be the number of estimators of the model?", min_value=10,max_value=100,value=10,step=10)
-        max_depth=st.slider("What would be the max_depth of the model?", min_value=1,max_value=10,value=1,step=1)
+        n_estimators=st.slider("What would be the number of estimators of the model?", min_value=10,max_value=100,value=100,step=10)
+        max_depth=st.slider("What would be the max_depth of the model?", min_value=1,max_value=10,value=8,step=1)
         accuracy,model_final,X_test,y_test,y_pred=Gradient(n_estimators,max_depth)
         plot1=pd.DataFrame()
         plot1['Features']=list(X_train.columns)
