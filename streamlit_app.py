@@ -351,7 +351,7 @@ def faker_gn(sample_size):
     features1=data1(dfA1,dfB1,"initials")
     return dfA1,dfB1,features1  
 @st.cache(suppress_st_warning=True,allow_output_mutation=True)
-def bloom_grams(df,grams,prime_numbers):
+def bloom_grams(df,grams=3,prime_numbers=[89,97]):
     def func(x):
       nonlocal grams,prime_numbers
       s=["0"]*max(prime_numbers)
@@ -400,6 +400,8 @@ with faker_data:
     st.markdown('<p class="font2">Encryption Part</p>', unsafe_allow_html=True)
     grams=st.slider("What would be the N Grams for Bloom Filter Encryption?", min_value=2,max_value=5,value=3,step=1)
     prime_numbers = st.multiselect("Please select Prime Numbers for Hashing", [83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149])
+    st.write(grams)
+    st.write(prime_numbers)
     dfA1_hash=bloom_grams(dfA1,grams,prime_numbers)
     st.write(dfA1_hash.head(5)) 
     st.markdown("[Scroll up](#capstone-project)",unsafe_allow_html=True)      
