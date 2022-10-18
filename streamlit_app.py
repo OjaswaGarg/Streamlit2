@@ -9,6 +9,8 @@ def import_or_install(package):
         subprocess.check_call([sys.executable, '-m', 'pip', 'install',package])
 import_or_install("faker")
 import_or_install("PIL")
+import_or_install("tqdm")
+from tqdm import tqdm
 from PIL import Image
 import_or_install("requests")
 import requests
@@ -368,8 +370,22 @@ def bloom_grams(df,grams=3,prime_numbers=[89,97]):
     return df.applymap(func)
 @st.cache(suppress_st_warning=True,allow_output_mutation=True)
 def features_encrypt(dfA,dfB,candidate_links):
+    def cosine_sim(str1,str2):
+      sim=0
+      str1_l2=0
+      str2_l2=0
+      for i in range(len(str1)):
+        if str1[i]=='1':
+          str1_l2+=1
+        if str2[i]=='1':
+          str2_l2+=1
+        if str1[i]=='1' and str2[i]=='1':
+          sim+=1  
+      div=math.sqrt(str1_l2*str2_l2) 
+      return sim/div    
     merge_list=[]
-    for i in candidate_links:
+    for index in tqdm(len(candidate_links)):
+      i=candidate_links[index]
       val1=dfA.loc[i[0]].tolist()
       val2=dfB.loc[i[1]].tolist()
       merge_list.append([])
