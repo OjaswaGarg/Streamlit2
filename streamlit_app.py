@@ -349,7 +349,22 @@ def faker_gn(sample_size):
     dfA1['address']=dfA1['street_number']+" "+dfA1['address_1']+" "+dfA1['address_2']
     dfB1['address']=dfB1['street_number']+" "+dfB1['address_1']+" "+dfB1['address_2']
     features1=data1(dfA1,dfB1,"initials")
-    return dfA1,dfB1,features1    
+    return dfA1,dfB1,features1  
+@st.cache(suppress_st_warning=True,allow_output_mutation=True)
+def bloom_grams(df,grams,prime_numbers):
+    def func(x):
+      nonlocal grams,prime_numbers
+      s=["0"]*max(prime_numbers)
+      #padding
+      copy_x=" "*(grams-1)+str(x)+" "*(grams-1)
+      for index in range(grams-1,len(copy_x)):
+        curr_str=copy_x[index-grams+1:index+1]
+        val=hash(curr_str)
+        for i in prime_numbers:
+          s[val%i]="1"
+      return "".join(s)
+    return df.applymap(bloom_grams)
+
 with faker_data:
     st.markdown('<p class="font2">Running Model on Faker Data</p>', unsafe_allow_html=True)
     sample_size=st.slider("What would be the sample size of Fake Data?", min_value=100,max_value=5000,value=500,step=100)
@@ -366,7 +381,8 @@ with faker_data:
     features1.reset_index(inplace=True)
     features1=features1[features1["level_0"]!=features1["level_1"]]
     show=features1[features1['Match']>=Match_Rate]
-    st.markdown('<p class="font2">Number of Matches', unsafe_allow_html=True)
+    
+    st.markdown('<p class="font2">Number of Matches for Unencrypted Data', unsafe_allow_html=True)
     st.write(len(show)//2)
     show.sort_values(['Match'],ascending=False,inplace=True)
     show=show.reset_index(drop=True)
@@ -380,4 +396,9 @@ with faker_data:
           st.write(f1["Match"]*100)
           d1=dfA1.iloc[[show['level_0'].values[i],show['level_1'].values[i]]]
           st.write(d1)
+    
+    Grams=st.slider("What would be the N Grams for Bloom Filter Encryption?", min_value=2,max_value=5,value=3,step=1)
+    fixed_numbers = st.multiselect("Please select numbers", [1, 2, 3, 4, 5])
+    st.write(fixed_numbers)
+    
     st.markdown("[Scroll up](#capstone-project)",unsafe_allow_html=True)      
