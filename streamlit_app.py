@@ -403,5 +403,7 @@ with faker_data:
     st.write(grams)
     st.write(prime_numbers)
     dfA1_hash=bloom_grams(dfA1,grams,prime_numbers)
+    st.markdown('<p class="font2">Encrypted Fake Data</p>', unsafe_allow_html=True)
     st.write(dfA1_hash.head(5)) 
+    dfB1_hash=dfA1_hash.copy()
     st.markdown("[Scroll up](#capstone-project)",unsafe_allow_html=True)      
