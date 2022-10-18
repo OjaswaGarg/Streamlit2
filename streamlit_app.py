@@ -110,29 +110,17 @@ NOMATCH = 0
 UNKNOWN = -1
 MATCH = 1
 @labeling_function()
-def soc_sec(x):
-    return MATCH if x.soc_sec_id>0.9 else UNKNOWN
-@labeling_function()    
-def soc_sec_rev(x):
-    return NOMATCH if x.soc_sec_id<0.6 else UNKNOWN
-
-
-@labeling_function()
 def name(x):
     return MATCH if  x.given_name>0.9 and x.surname>0.9 else UNKNOWN
-
 @labeling_function()
 def name_date(x):
     return MATCH if  x.given_name>0.9 and x.surname>0.9 and x.date_of_birth>0.7 else UNKNOWN
-
 @labeling_function()
 def name_rev(x):
     return NOMATCH if  x.given_name<0.6 or x.surname<0.6 else UNKNOWN    
-
 @labeling_function()
 def address(x):
     return MATCH if  x.address>0.6 else UNKNOWN
-
 @labeling_function()
 def address_rev(x):
     return NOMATCH if  x.address<0.2 else UNKNOWN   
@@ -161,16 +149,11 @@ def data1(dfA,dfB,blocker=""):
         b=list(dfB.index)
         candidate_links=pd.MultiIndex.from_product([a,b])  
       compare = Compare()
-      compare.exact('phonetic_given_name', 'phonetic_given_name', label="phonetic_given_name")
-      compare.exact('phonetic_surname', 'phonetic_surname', label='phonetic_surname')
       compare.string('given_name', 'given_name', method='jarowinkler', label="given_name")
       compare.string('surname', 'surname', method='jarowinkler', label="surname")
       compare.string('suburb', 'suburb', method='jarowinkler', label="suburb")
       compare.string('state', 'state', method='jaro_winkler', label="state")
       compare.string('address', 'address', method='cosine', label="address")
-      compare.string('address_1', 'address_1', method='jarowinkler', label="address_1")
-      compare.string('address_2', 'address_2', method='jarowinkler', label="address_2")
-      compare.string("soc_sec_id","soc_sec_id",method='jarowinkler', label="soc_sec_id")
       compare.string("date_of_birth","date_of_birth",method='jarowinkler', label="date_of_birth")
       features = compare.compute(candidate_links, dfA, dfB)
       return features
@@ -215,10 +198,6 @@ metrics = st.sidebar.multiselect("What metrics to plot?", ("Confusion Matrix", "
 @st.cache(allow_output_mutation=True,suppress_st_warning=True)
 def data():
     dfA, dfB, true_links = load_febrl4(return_links=True)
-    dfA["phonetic_given_name"] = phonetic(dfA["given_name"], "soundex")
-    dfB["phonetic_given_name"] = phonetic(dfB["given_name"], "soundex")
-    dfA["phonetic_surname"] = phonetic(dfA["surname"], "soundex")
-    dfB["phonetic_surname"] = phonetic(dfB["surname"], "soundex")
     dfA["initials"] = (dfA["given_name"].str[0]  + dfA["surname"].str[0])
     dfB["initials"] = (dfB["given_name"].str[0]  + dfB["surname"].str[0])
     dfA["date_of_birth"] = dfA["date_of_birth"].str.replace('-', "")
@@ -242,8 +221,6 @@ with header:
     st.markdown("""# Capstone Project""")
     st.markdown('<p class="font11">Welcome to Record Linkage</p>',unsafe_allow_html=True)
     
-    
-
 with dataset:
     st.markdown('<p class="font2">Data from Record Linkage Package</p>', unsafe_allow_html=True)
     dfA, dfB, true_links,features=data()
@@ -363,10 +340,6 @@ def faker_gn(sample_size):
     data_sample=data_creation(entries=sample_size)
     dfA1=data_sample
     dfB1=data_sample
-    dfA1["phonetic_given_name"] = phonetic(dfA1["given_name"], "soundex")
-    dfB1["phonetic_given_name"] = phonetic(dfB1["given_name"], "soundex")
-    dfA1["phonetic_surname"] = phonetic(dfA1["surname"], "soundex")
-    dfB1["phonetic_surname"] = phonetic(dfB1["surname"], "soundex")
     dfA1["initials"] = (dfA1["given_name"].str[0]  + dfA1["surname"].str[0])
     dfB1["initials"] = (dfB1["given_name"].str[0]  + dfB1["surname"].str[0])
     dfA1["date_of_birth"] = dfA1["date_of_birth"].astype(str).str.replace('-', "")
@@ -379,7 +352,7 @@ def faker_gn(sample_size):
     return dfA1,dfB1,features1    
 with faker_data:
     st.markdown('<p class="font2">Running Model on Faker Data</p>', unsafe_allow_html=True)
-    sample_size=st.slider("What would be the sample size of Fake Data?", min_value=1000,max_value=15000,value=5000,step=1000)
+    sample_size=st.slider("What would be the sample size of Fake Data?", min_value=100,max_value=5000,value=500,step=100)
     dfA1,dfB1,featuressour =faker_gn(sample_size)
     features1=featuressour.copy()
     if models=="Gradient Boosting" or models=="Logistic Regression":
