@@ -396,9 +396,10 @@ with faker_data:
           st.write(f1["Match"]*100)
           d1=dfA1.iloc[[show['level_0'].values[i],show['level_1'].values[i]]]
           st.write(d1)
-    
-    Grams=st.slider("What would be the N Grams for Bloom Filter Encryption?", min_value=2,max_value=5,value=3,step=1)
-    fixed_numbers = st.multiselect("Please select numbers", [1, 2, 3, 4, 5])
-    st.write(fixed_numbers)
-    
+        
+    st.markdown('<p class="font2">Encryption Part</p>', unsafe_allow_html=True)
+    grams=st.slider("What would be the N Grams for Bloom Filter Encryption?", min_value=2,max_value=5,value=3,step=1)
+    prime_numbers = st.multiselect("Please select Prime Numbers for Hashing", [83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149])
+    dfA1_hash=bloom_grams(dfA1,grams,prime_numbers)
+    st.write(dfA1_hash.head(5)) 
     st.markdown("[Scroll up](#capstone-project)",unsafe_allow_html=True)      
