@@ -124,7 +124,7 @@ def address(x):
 @labeling_function()
 def address_rev(x):
     return NOMATCH if  x.address<0.2 else UNKNOWN   
-lfs = [soc_sec, address,soc_sec_rev, name_rev, address_rev,name_date]
+lfs = [name,address, name_rev, address_rev,name_date]
 applier = PandasLFApplier(lfs=lfs)
 def plot_metrics(model,metrics_list,x_test,y_test):
     if "Confusion Matrix" in metrics_list:
