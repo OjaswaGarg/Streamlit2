@@ -437,7 +437,7 @@ with faker_data:
     dfA1_hash=bloom_grams(dfA1,grams,prime_numbers)
     st.markdown('<p class="font2">Encrypted Fake Data</p>', unsafe_allow_html=True)
     st.write(dfA1_hash.head(5)) 
-    st.write(dfA1_hash.columns) 
+
     dfB1_hash=dfA1_hash.copy()
     cand_links=candidate_links_func(dfA1,dfB1,"initials")
     merge_list= features_encrypt(dfA1_hash,dfB1_hash,cand_links)
@@ -452,7 +452,10 @@ with faker_data:
     
     encrypt_features_df1['Match']=model_final.predict_proba(encrypt_input1)[:,1]
     encrypt_features_df1.reset_index(inplace=True)
+    st.write(encrypt_features_df1.head(5)) 
     encrypt_features_df1=encrypt_features_df1[encrypt_features_df1["level_0"]!=encrypt_features_df1["level_1"]]
+    st.write(encrypt_features_df1.head(5)) 
+    
     show=encrypt_features_df1[encrypt_features_df1['Match']>=Match_Rate]
     
     st.markdown('<p class="font2">Number of Matches for Encrypted Data', unsafe_allow_html=True)
@@ -469,7 +472,4 @@ with faker_data:
           st.write(f1["Match"]*100)
           d1=dfA1.iloc[[show['level_0'].values[i],show['level_1'].values[i]]]
           st.write(d1)
-    
-    
-    
     st.markdown("[Scroll up](#capstone-project)",unsafe_allow_html=True)      
