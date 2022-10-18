@@ -437,6 +437,7 @@ with faker_data:
     dfA1_hash=bloom_grams(dfA1,grams,prime_numbers)
     st.markdown('<p class="font2">Encrypted Fake Data</p>', unsafe_allow_html=True)
     st.write(dfA1_hash.head(5)) 
+    st.write(dfA1_hash.columns) 
     dfB1_hash=dfA1_hash.copy()
     cand_links=candidate_links_func(dfA1,dfB1,"initials")
     merge_list= features_encrypt(dfA1_hash,dfB1_hash,cand_links)
