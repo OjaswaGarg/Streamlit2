@@ -363,7 +363,7 @@ def bloom_grams(df,grams=3,prime_numbers=[89,97]):
         for i in prime_numbers:
           s[val%i]="1"
       return "".join(s)
-    return df.applymap(bloom_grams)
+    return df.applymap(func)
 
 with faker_data:
     st.markdown('<p class="font2">Running Model on Faker Data</p>', unsafe_allow_html=True)
