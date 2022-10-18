@@ -394,7 +394,7 @@ def features_encrypt(dfA,dfB,candidate_links):
       merge_list[-1].append(cosine_sim(val1[1],val2[1]))
       merge_list[-1].append(cosine_sim(val1[5],val2[5]))
       merge_list[-1].append(cosine_sim(val1[7],val2[7]))
-      merge_list[-1].append(cosine_sim(val1[13],val2[13]))
+      merge_list[-1].append(cosine_sim(val1[11],val2[11]))
       merge_list[-1].append(cosine_sim(val1[8],val2[8]))
     return merge_list
 with faker_data:
