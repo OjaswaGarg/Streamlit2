@@ -442,6 +442,7 @@ with faker_data:
     cand_links=candidate_links_func(dfA1,dfB1,"initials")
     merge_list= features_encrypt(dfA1_hash,dfB1_hash,cand_links)
     encrypt_features_df=pd.DataFrame(merge_list,columns=list(featuressour.columns))
+    encrypt_features_df.index=cand_links
     encrypt_features_df1=encrypt_features_df.copy()
     if models=="Gradient Boosting" or models=="Logistic Regression":
         encrypt_input1=encrypt_features_df1
