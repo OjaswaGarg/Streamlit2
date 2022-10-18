@@ -384,7 +384,7 @@ def features_encrypt(dfA,dfB,candidate_links):
       div=math.sqrt(str1_l2*str2_l2) 
       return sim/div    
     merge_list=[]
-    for index in tqdm(len(candidate_links)):
+    for index in tqdm(range(len(candidate_links))):
       i=candidate_links[index]
       val1=dfA.loc[i[0]].tolist()
       val2=dfB.loc[i[1]].tolist()
