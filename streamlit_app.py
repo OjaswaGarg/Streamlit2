@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import sys
 import subprocess
+import math
 def import_or_install(package):
     try:
         __import__(package)
