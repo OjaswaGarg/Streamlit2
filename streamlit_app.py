@@ -139,7 +139,7 @@ def plot_metrics(model,metrics_list,x_test,y_test):
         st.subheader("Precision-Recall Curve")
         plot_precision_recall_curve(model, x_test, y_test)
         st.pyplot()
-def data1(dfA,dfB,blocker=""):
+def candidate_links_func(dfA,dfB,blocker): 
       indexer = recordlinkage.Index()
       if blocker!="":
         indexer.block(blocker)
@@ -147,17 +147,19 @@ def data1(dfA,dfB,blocker=""):
       else:
         a=list(dfA.index)
         b=list(dfB.index)
-        candidate_links=pd.MultiIndex.from_product([a,b])  
+        candidate_links=pd.MultiIndex.from_product([a,b]) 
+      return candidate_links  
+def data1(dfA,dfB,blocker=""):
+      candidate_links=candidate_links_func(dfA,dfB,blocker)
       compare = Compare()
-      compare.string('given_name', 'given_name', method='jarowinkler', label="given_name")
-      compare.string('surname', 'surname', method='jarowinkler', label="surname")
-      compare.string('suburb', 'suburb', method='jarowinkler', label="suburb")
-      compare.string('state', 'state', method='jaro_winkler', label="state")
+      compare.string('given_name', 'given_name', method='cosine', label="given_name")
+      compare.string('surname', 'surname', method='cosine', label="surname")
+      compare.string('suburb', 'suburb', method='cosine', label="suburb")
+      compare.string('state', 'state', method='cosine', label="state")
       compare.string('address', 'address', method='cosine', label="address")
-      compare.string("date_of_birth","date_of_birth",method='jarowinkler', label="date_of_birth")
+      compare.string("date_of_birth","date_of_birth",method='cosine', label="date_of_birth")
       features = compare.compute(candidate_links, dfA, dfB)
       return features
-  
 fake = Faker(42)   
 def data_creation(entries):
     given_name = []
@@ -364,7 +366,20 @@ def bloom_grams(df,grams=3,prime_numbers=[89,97]):
           s[val%i]="1"
       return "".join(s)
     return df.applymap(func)
-
+@st.cache(suppress_st_warning=True,allow_output_mutation=True)
+def features_encrypt(dfA,dfB,candidate_links):
+    merge_list=[]
+    for i in candidate_links:
+      val1=dfA.loc[i[0]].tolist()
+      val2=dfB.loc[i[1]].tolist()
+      merge_list.append([])
+      merge_list[-1].append(cosine_sim(val1[0],val2[0]))
+      merge_list[-1].append(cosine_sim(val1[1],val2[1]))
+      merge_list[-1].append(cosine_sim(val1[5],val2[5]))
+      merge_list[-1].append(cosine_sim(val1[7],val2[7]))
+      merge_list[-1].append(cosine_sim(val1[13],val2[13]))
+      merge_list[-1].append(cosine_sim(val1[8],val2[8]))
+    return merge_list
 with faker_data:
     st.markdown('<p class="font2">Running Model on Faker Data</p>', unsafe_allow_html=True)
     sample_size=st.slider("What would be the sample size of Fake Data?", min_value=100,max_value=5000,value=500,step=100)
@@ -406,4 +421,36 @@ with faker_data:
     st.markdown('<p class="font2">Encrypted Fake Data</p>', unsafe_allow_html=True)
     st.write(dfA1_hash.head(5)) 
     dfB1_hash=dfA1_hash.copy()
+    cand_links=candidate_links_func(dfA1,dfB1,"initials")
+    merge_list= features_encrypt(dfA1_hash,dfB1_hash,cand_links)
+    encrypt_features_df=pd.DataFrame(merge_list,columns=list(featuressour.columns))
+    encrypt_features_df1=encrypt_features_df.copy()
+    if models=="Gradient Boosting" or models=="Logistic Regression":
+        encrypt_input1=encrypt_features_df1
+    else:
+        L_fake = applier.apply(df=encrypt_features_df1)
+        encrypt_input1=L_fake 
+    
+    encrypt_features_df1['Match']=model_final.predict_proba(encrypt_input1)[:,1]
+    encrypt_features_df1.reset_index(inplace=True)
+    encrypt_features_df1=encrypt_features_df1[encrypt_features_df1["level_0"]!=encrypt_features_df1["level_1"]]
+    show=encrypt_features_df1[encrypt_features_df1['Match']>=Match_Rate]
+    
+    st.markdown('<p class="font2">Number of Matches for Encrypted Data', unsafe_allow_html=True)
+    st.write(len(show)//2)
+    show.sort_values(['Match'],ascending=False,inplace=True)
+    show=show.reset_index(drop=True)
+    display=0
+    for i in range(0,len(show),2):
+          display+=1
+          if display==Display_Matches:
+              break
+          st.markdown('<p class="font3">Probability of Matching', unsafe_allow_html=True)
+          f1=show.iloc[i]
+          st.write(f1["Match"]*100)
+          d1=dfA1.iloc[[show['level_0'].values[i],show['level_1'].values[i]]]
+          st.write(d1)
+    
+    
+    
     st.markdown("[Scroll up](#capstone-project)",unsafe_allow_html=True)      
