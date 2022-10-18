@@ -452,14 +452,9 @@ with faker_data:
     
     encrypt_features_df1['Match']=model_final.predict_proba(encrypt_input1)[:,1]
     encrypt_features_df1.reset_index(inplace=True)
-    st.write(encrypt_features_df1.head(5)) 
     encrypt_features_df1=encrypt_features_df1[encrypt_features_df1["level_0"]!=encrypt_features_df1["level_1"]]
-    st.write(encrypt_features_df1.head(5)) 
-    
-    show=encrypt_features_df1[encrypt_features_df1['Match']>=Match_Rate]
-    
-    st.markdown('<p class="font2">Number of Matches for Encrypted Data', unsafe_allow_html=True)
-    st.write(len(show)//2)
+    show=encrypt_features_df1[encrypt_features_df1['Match']>=0]
+    st.markdown('<p class="font2">Top Matches for Encrypted Data', unsafe_allow_html=True)
     show.sort_values(['Match'],ascending=False,inplace=True)
     show=show.reset_index(drop=True)
     display=0
