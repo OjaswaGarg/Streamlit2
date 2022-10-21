@@ -231,6 +231,11 @@ with dataset:
     dfA, dfB, true_links,features=data()
     st.markdown('<p class="font3">Few Lines of Data', unsafe_allow_html=True)
     st.write(dfA.head(5))  
+    name = st.text_input('Name')
+    if not name:
+      st.warning('Please input a name.')
+      st.stop()
+    st.success('Thank you for inputting a name.')
 
 with  featurest:
     st.markdown('<p class="font2">Modelling Features</p>', unsafe_allow_html=True)
