@@ -407,12 +407,12 @@ with faker_data:
     else:
         L_fake = applier.apply(df=features1)
         input1=L_fake 
-    Match_Rate=st.slider("What would be the Probabilty Match Rate?", min_value=0.1,max_value=1.0,value=0.1,step=0.1)
+    #Match_Rate=st.slider("What would be the Probabilty Match Rate?", min_value=0.1,max_value=1.0,value=0.1,step=0.1)
     Display_Matches=st.slider("How many top Macthes to display?", min_value=1,max_value=10,value=5,step=1)    
     features1['Match']=model_final.predict_proba(input1)[:,1]
     features1.reset_index(inplace=True)
     features1=features1[features1["level_0"]!=features1["level_1"]]
-    show=features1[features1['Match']>=Match_Rate]
+    show=features1[features1['Match']>=0]
     
     st.markdown('<p class="font2">Number of Matches for Unencrypted Data', unsafe_allow_html=True)
     st.write(len(show)//2)
