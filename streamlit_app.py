@@ -397,7 +397,7 @@ def manual_rename(df,col_names):
                 st.warning('Please provide column name.')
                 st.stop()
         st.write(col,name)        
-        df.rename(columns={col: name})                         
+        df.rename(columns={col: name},inplace = True)                         
     return df                             
 
 @st.cache(suppress_st_warning=True,allow_output_mutation=True)
