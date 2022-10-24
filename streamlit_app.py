@@ -239,8 +239,8 @@ def data():
     dfB.columns=new_column_names
     dfA["initials"] = (dfA["First Name"].str[0]  + dfA["Last Name"].str[0])
     dfB["initials"] = (dfB["First Name"].str[0]  + dfB["Last Name"].str[0])
-    dfA["date_of_birth"] = dfA["Date of Birth"].str.replace('-', "")
-    dfB["date_of_birth"] = dfB["Date of Birth"].str.replace('-', "")
+    dfA["Date of Birth"] = dfA["Date of Birth"].str.replace('-', "")
+    dfB["Date of Birth"] = dfB["Date of Birth"].str.replace('-', "")
     dfA["soc_sec_id"] = dfA["Social Security Number"].str.replace('-', "")
     dfB["soc_sec_id"] = dfB["Social Security Number"].str.replace('-', "")
     dfA['address']=dfA['Street Number']+" "+dfA['Address1']+" "+dfA['Address2']
@@ -383,8 +383,8 @@ def faker_gn(sample_size):
     dfB1=data_sample
     dfA1["initials"] = (dfA1["First Name"].str[0]  + dfA1["Last Name"].str[0])
     dfB1["initials"] = (dfB1["First Name"].str[0]  + dfB1["Last Name"].str[0])
-    dfA1["date_of_birth"] = dfA1["Date of Birth"].str.replace('-', "")
-    dfB1["date_of_birth"] = dfB1["Date of Birth"].str.replace('-', "")
+    dfA1["Date of Birth"] = dfA1["Date of Birth"].str.replace('-', "")
+    dfB1["Date of Birth"] = dfB1["Date of Birth"].str.replace('-', "")
     dfA1["soc_sec_id"] = dfA1["Social Security Number"].str.replace('-', "")
     dfB1["soc_sec_id"] = dfB1["Social Security Number"].str.replace('-', "")
     dfA1['address']=dfA1['Street Number']+" "+dfA1['Address1']+" "+dfA1['Address2']
