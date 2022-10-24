@@ -10,8 +10,6 @@ def import_or_install(package):
         subprocess.check_call([sys.executable, '-m', 'pip', 'install',package])
 import_or_install("faker")
 import_or_install("PIL")
-import_or_install("tqdm")
-from tqdm import tqdm
 from PIL import Image
 import_or_install("requests")
 import requests
@@ -390,7 +388,7 @@ def features_encrypt(dfA,dfB,candidate_links):
       div=math.sqrt(str1_l2*str2_l2) 
       return sim/div    
     merge_list=[]
-    for index in tqdm(range(len(candidate_links))):
+    for index in range(len(candidate_links)):
       i=candidate_links[index]
       val1=dfA.loc[i[0]].tolist()
       val2=dfB.loc[i[1]].tolist()
@@ -437,6 +435,10 @@ with faker_data:
     st.markdown('<p class="font2">Encryption Part</p>', unsafe_allow_html=True)
     grams=st.slider("What would be the N Grams for Bloom Filter Encryption?", min_value=2,max_value=5,value=3,step=1)
     prime_numbers = st.multiselect("Please select Prime Numbers for Hashing", [83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149])
+    if not prime_numbers:
+      st.warning('Please input prime number.')
+      st.stop()
+    st.success('Thank you for inputting prime numbers.')
     st.write(grams)
     st.write(prime_numbers)
     dfA1_hash=bloom_grams(dfA1,grams,prime_numbers)
