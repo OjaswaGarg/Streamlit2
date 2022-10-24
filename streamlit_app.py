@@ -385,7 +385,8 @@ def manual_rename(df,col_names):
     options=set(my_dict.values())    
     options.add("Other- Enter Manually")
     for cols in list(df.columns):
-        options.remove(cols)
+        if cols in options:
+            options.remove(cols)
     for col in col_names:
         name=""
         name = st.selectbox("Please select Appropraite Column Name for "+col,options)
@@ -398,8 +399,9 @@ def manual_rename(df,col_names):
             if name=="":
                 st.warning('Please provide column name.')
                 st.stop()
-        st.write(col,name)        
-        options.remove(name)
+        st.write(col,name) 
+        if name in options:
+            options.remove(name)
         df.rename(columns={col: name},inplace = True)                         
     return df                             
 
