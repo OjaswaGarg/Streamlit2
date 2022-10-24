@@ -389,7 +389,7 @@ def manual_rename(df,col_names):
           st.warning('Please select option.')
           st.stop()
         if name=="Other- Enter Manually":
-            name = st.text_input('Manual Input Name for Column")
+            name = st.text_input('Manual Input Name for Column')
             if not name:
                 st.warning('Please provide column name.')
                 st.stop()
