@@ -190,7 +190,18 @@ def data_creation(entries):
                       columns= ['given_name', 'surname', 'street_number', 'address_1', 'address_2', 'suburb','postcode', 'state','date_of_birth','soc_sec_id'])
     return df  
 class_names = ["No Match", "Match"]
-
+my_dict= {'name': 'First Name', 'givenname': 'First Name', 'fname': 'First Name', 'firstname': 'First Name',
+          'surname': 'Last Name', 'familyname': 'Last Name', 'lname': 'Last Name', 'lastname': 'Last Name',
+          'streetno': 'Street Number', 'stno': 'Street Number', 'streetnumber': 'Street Number',
+          'streetaddress': 'Address1', 'addr': 'Address1', 'addressline1': 'Address1', 'address':'Address1', 'address1':'Address1',
+          'unitnumber': 'Address2', 'apartmentnumber': 'Address2', 'addr2': 'Address2', 'addressline2': 'Address2', 'address2': 'Address2',
+          'county': 'Suburb', 'city': 'Suburb', 'area': 'Suburb', 'region': 'Suburb', 'suburb':'Suburb',
+          'zipcode':'Postcode', 'areacode':'Postcode','zip':'Postcode', 'postalcode':'Postcode', 'postcode':'Postcode',
+          'state': 'State',
+          'dob':'Date of Birth', 'birthdate':'Date of Birth', 'dateofbirthddmmyy':'Date of Birth', 'dateofbirthmmddyy':'Date of Birth', 'dateofbirthddmmyyyy':'Date of Birth', 'dateofbirthmmddyyyy':'Date of Birth', 'dobddmmyy':'Date of Birth', 'dobmmddyy':'Date of Birth', 'dobddmmyyyy':'Date of Birth', 'dobmmddyyyy':'Date of Birth', 'dateofbirth':'Date of Birth',
+          'ssn':'Social Security Number', 'socsecid': 'Social Security Number', 'socialsecuritynumber':'Social Security Number', 'ssa':'Social Security Number', 'socialsecuritycard':'Social Security Number', 'ssid':'Social Security Number', 'socialsecuritynumer':'Social Security Number',
+          'contactnumber':'Phone Number', 'number':'Phone Number', 'phone':'Phone Number', 'phno':'Phone Number', 'phoneo':'Phone Number', 'phnumber':'Phone Number', 'mobile':'Phone Number', 'mobileno':'Phone Number', 'mobilenumber':'Phone Number', 'cellphone':'Phone Number', 'cellphoneno':'Phone Number', 'cellphonenumber':'Phone Number', 'phonenumber':'Phone Number',
+          'email':'Email Address', 'emailid':'Email Address', 'emailaddress':'Email Address'}
 st.sidebar.title("Interactive") 
 
 
@@ -198,17 +209,35 @@ models=st.sidebar.selectbox("How would you like the data to be modeled?",("Gradi
 
 metrics = st.sidebar.multiselect("What metrics to plot?", ("Confusion Matrix", "ROC Curve", "Precision-Recall Curve"))
 
+
+def column_matching(column_names):
+    canonical_lst=[]
+    new_column_names=[]
+    def standard_name(col_name):
+        col_name= ''.join(col_name.split()).lower()
+        col_name= re.sub("[^A-Za-z0-9]", '', col_name)
+        if col_name in check_list:
+            col_name= my_dict[col_name]
+        else:
+            canonical_lst.append(col_name)
+        new_column_names.append(col_name)
+    return new_column_names,canonical_lst
 @st.cache(allow_output_mutation=True,suppress_st_warning=True)
 def data():
     dfA, dfB, true_links = load_febrl4(return_links=True)
-    dfA["initials"] = (dfA["given_name"].str[0]  + dfA["surname"].str[0])
-    dfB["initials"] = (dfB["given_name"].str[0]  + dfB["surname"].str[0])
-    dfA["date_of_birth"] = dfA["date_of_birth"].str.replace('-', "")
-    dfB["date_of_birth"] = dfB["date_of_birth"].str.replace('-', "")
-    dfA["soc_sec_id"] = dfA["soc_sec_id"].str.replace('-', "")
-    dfB["soc_sec_id"] = dfB["soc_sec_id"].str.replace('-', "")
-    dfA['address']=dfA['street_number']+" "+dfA['address_1']+" "+dfA['address_2']
-    dfB['address']=dfB['street_number']+" "+dfB['address_1']+" "+dfB['address_2'] 
+    new_column_names,canonical_lst=column_matching(list(dfA.columns))
+    dfA.columns=new_column_names
+    st.write(canonical_lst)
+    new_column_names,canonical_lst=column_matching(list(dfB.columns))
+    dfB.columns=new_column_names
+    dfA["initials"] = (dfA["First Name"].str[0]  + dfA["Last Name"].str[0])
+    dfB["initials"] = (dfB["First Name"].str[0]  + dfB["Last Name"].str[0])
+    dfA["date_of_birth"] = dfA["Date of Birth"].str.replace('-', "")
+    dfB["date_of_birth"] = dfB["Date of Birth"].str.replace('-', "")
+    dfA["soc_sec_id"] = dfA["Social Security Number"].str.replace('-', "")
+    dfB["soc_sec_id"] = dfB["Social Security Number"].str.replace('-', "")
+    dfA['address']=dfA['Street Number']+" "+dfA['Address1']+" "+dfA['Address2']
+    dfB['address']=dfB['Street Number']+" "+dfB['Address1']+" "+dfB['Address2'] 
     features=data1(dfA,dfB,"initials")
     return dfA,dfB,true_links,features
 
@@ -346,16 +375,19 @@ with  model_training:
 @st.cache(suppress_st_warning=True,allow_output_mutation=True)
 def faker_gn(sample_size):
     data_sample=data_creation(entries=sample_size)
+    new_column_names,canonical_lst=column_matching(list(data_sample.columns))
+    data_sample.columns=new_column_names
+    st.write(canonical_lst)
     dfA1=data_sample
     dfB1=data_sample
-    dfA1["initials"] = (dfA1["given_name"].str[0]  + dfA1["surname"].str[0])
-    dfB1["initials"] = (dfB1["given_name"].str[0]  + dfB1["surname"].str[0])
-    dfA1["date_of_birth"] = dfA1["date_of_birth"].astype(str).str.replace('-', "")
-    dfB1["date_of_birth"] = dfB1["date_of_birth"].astype(str).str.replace('-', "")
-    dfA1["soc_sec_id"] = dfA1["soc_sec_id"].astype(str).str.replace('-', "")
-    dfB1["soc_sec_id"] = dfB1["soc_sec_id"].astype(str).str.replace('-', "")
-    dfA1['address']=dfA1['street_number']+" "+dfA1['address_1']+" "+dfA1['address_2']
-    dfB1['address']=dfB1['street_number']+" "+dfB1['address_1']+" "+dfB1['address_2']
+    dfA1["initials"] = (dfA1["First Name"].str[0]  + dfA1["Last Name"].str[0])
+    dfB1["initials"] = (dfB1["First Name"].str[0]  + dfB1["Last Name"].str[0])
+    dfA1["date_of_birth"] = dfA1["Date of Birth"].str.replace('-', "")
+    dfB1["date_of_birth"] = dfB1["Date of Birth"].str.replace('-', "")
+    dfA1["soc_sec_id"] = dfA1["Social Security Number"].str.replace('-', "")
+    dfB1["soc_sec_id"] = dfB1["Social Security Number"].str.replace('-', "")
+    dfA1['address']=dfA1['Street Number']+" "+dfA1['Address1']+" "+dfA1['Address2']
+    dfB1['address']=dfB1['Street Number']+" "+dfB1['Address1']+" "+dfB1['Address2'] 
     features1=data1(dfA1,dfB1,"initials")
     return dfA1,dfB1,features1  
 @st.cache(suppress_st_warning=True,allow_output_mutation=True)
