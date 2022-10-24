@@ -191,7 +191,7 @@ def data_creation(entries):
         date_of_birth.append(fake.date_of_birth())
         
     df = pd.DataFrame(list(zip(given_name, surname, street_number, address_1, address_2, suburb,  postcode,state,date_of_birth,soc_sec_id)), 
-                      columns= ['given_name', 'surname', 'street_number', 'address_1', 'address_2', 'suburb','postcode', 'state','date_of_birth','soc_sec_id'])
+                      columns= ['given_name_1', 'surname2', 'street_number', 'address_1', 'address_2', 'suburb','postcode', 'state','date_of_birth','soc_sec_id'])
     return df  
 class_names = ["No Match", "Match"]
 my_dict= {'name': 'First Name', 'givenname': 'First Name', 'fname': 'First Name', 'firstname': 'First Name',
@@ -234,7 +234,6 @@ def data():
     dfA, dfB, true_links = load_febrl4(return_links=True)
     new_column_names,canonical_lst=column_matching(list(dfA.columns))
     dfA.columns=new_column_names
-    st.write(canonical_lst)
     new_column_names,canonical_lst=column_matching(list(dfB.columns))
     dfB.columns=new_column_names
     dfA["initials"] = (dfA["First Name"].str[0]  + dfA["Last Name"].str[0])
@@ -372,6 +371,30 @@ with  model_training:
            sns.heatmap(cm*100, annot=True,annot_kws={"size": 16})
            st.pyplot(fig) 
 
+def manual_rename(df,col_names):
+    name = st.text_input('Manual Review of Unmatched Column Names wanted? Y/N')
+    if not name:
+      st.warning('Please input an option.')
+      st.stop()
+    if name in "nN":
+        return df
+    st.warning('No Manual Review Wanted')
+    if col_names==[]:
+        return df
+    options=list(my_dict.keys())
+    options.append("Other- Enter Manually")
+    for col in col_names:
+        name = st.select("Please select Appropraite Column Name for "+col,options)
+        if not name:
+          st.warning('Please select option.')
+          st.stop()
+        if name=="Other- Enter Manually":
+            name = st.text_input('Manual Input Name for Column")
+            if not name:
+                st.warning('Please provide column name.')
+                st.stop()
+        df.rename(columns={col: name})                         
+    return df                             
 
 @st.cache(suppress_st_warning=True,allow_output_mutation=True)
 def faker_gn(sample_size):
@@ -379,6 +402,7 @@ def faker_gn(sample_size):
     new_column_names,canonical_lst=column_matching(list(data_sample.columns))
     data_sample.columns=new_column_names
     st.write(canonical_lst)
+    data_sample=manual_rename(data_sample,  canonical_lst)                      
     dfA1=data_sample
     dfB1=data_sample
     dfA1["initials"] = (dfA1["First Name"].str[0]  + dfA1["Last Name"].str[0])
