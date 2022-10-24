@@ -156,12 +156,12 @@ def candidate_links_func(dfA,dfB,blocker):
 def data1(dfA,dfB,blocker=""):
       candidate_links=candidate_links_func(dfA,dfB,blocker)
       compare = Compare()
-      compare.string('given_name', 'given_name', method='cosine', label="given_name")
-      compare.string('surname', 'surname', method='cosine', label="surname")
-      compare.string('suburb', 'suburb', method='cosine', label="suburb")
-      compare.string('state', 'state', method='cosine', label="state")
+      compare.string('First Name', 'First Name', method='cosine', label="First Name")
+      compare.string('Last Name', 'Last Name', method='cosine', label="Last Name")
+      compare.string('Suburb', 'Suburb', method='cosine', label="Suburb")
+      compare.string('State', 'State', method='cosine', label="state")
       compare.string('address', 'address', method='cosine', label="address")
-      compare.string("date_of_birth","date_of_birth",method='cosine', label="date_of_birth")
+      compare.string("Date of Birth","Date of Birth",method='cosine', label="Date of Birth")
       features = compare.compute(candidate_links, dfA, dfB)
       return features
 
@@ -265,15 +265,9 @@ with dataset:
     dfA, dfB, true_links,features=data()
     st.markdown('<p class="font3">Few Lines of Data', unsafe_allow_html=True)
     st.write(dfA.head(5))  
-    #name = st.text_input('Name')
-    #if not name:
-    #  st.warning('Please input a name.')
-    #  st.stop()
-    #st.success('Thank you for inputting a name.')
 
 with  featurest:
     st.markdown('<p class="font2">Modelling Features</p>', unsafe_allow_html=True)
-    
     features['Target']=features.index.isin(true_links)
     features['Target']=features['Target'].astype(int)
     data=features.reset_index(drop=True)
