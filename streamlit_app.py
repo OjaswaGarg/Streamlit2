@@ -396,6 +396,7 @@ def manual_rename(df,col_names):
             if name=="":
                 st.warning('Please provide column name.')
                 st.stop()
+        st.write(col,name)        
         df.rename(columns={col: name})                         
     return df                             
 
