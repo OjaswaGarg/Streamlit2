@@ -220,7 +220,7 @@ def column_matching(column_names):
     def standard_name(col_name):
         col_name= ''.join(col_name.split()).lower()
         col_name= re.sub("[^A-Za-z0-9]", '', col_name)
-        if col_name in check_list:
+        if col_name in my_dict:
             col_name= my_dict[col_name]
         else:
             canonical_lst.append(col_name)
