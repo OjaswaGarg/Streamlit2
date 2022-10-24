@@ -3,6 +3,7 @@ import pandas as pd
 import sys
 import subprocess
 import math
+import re
 def import_or_install(package):
     try:
         __import__(package)
