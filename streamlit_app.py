@@ -140,6 +140,7 @@ def plot_metrics(model,metrics_list,x_test,y_test):
         st.subheader("Precision-Recall Curve")
         plot_precision_recall_curve(model, x_test, y_test)
         st.pyplot()
+        
 def candidate_links_func(dfA,dfB,blocker): 
       indexer = recordlinkage.Index()
       if blocker!="":
@@ -150,6 +151,7 @@ def candidate_links_func(dfA,dfB,blocker):
         b=list(dfB.index)
         candidate_links=pd.MultiIndex.from_product([a,b]) 
       return candidate_links  
+
 def data1(dfA,dfB,blocker=""):
       candidate_links=candidate_links_func(dfA,dfB,blocker)
       compare = Compare()
@@ -161,6 +163,7 @@ def data1(dfA,dfB,blocker=""):
       compare.string("date_of_birth","date_of_birth",method='cosine', label="date_of_birth")
       features = compare.compute(candidate_links, dfA, dfB)
       return features
+
 fake = Faker(42)   
 def data_creation(entries):
     given_name = []
@@ -221,7 +224,10 @@ def column_matching(column_names):
         else:
             canonical_lst.append(col_name)
         new_column_names.append(col_name)
+    for col in  column_names:
+        standard_name(col)
     return new_column_names,canonical_lst
+
 @st.cache(allow_output_mutation=True,suppress_st_warning=True)
 def data():
     dfA, dfB, true_links = load_febrl4(return_links=True)
