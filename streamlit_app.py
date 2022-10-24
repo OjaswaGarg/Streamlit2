@@ -372,25 +372,28 @@ with  model_training:
            st.pyplot(fig) 
 
 def manual_rename(df,col_names):
+    name=""
     name = st.text_input('Manual Review of Unmatched Column Names wanted? Y/N')
-    if not name:
+    if name=="":
       st.warning('Please input an option.')
       st.stop()
     if name in "nN":
+        st.warning('No Manual Review Wanted')
         return df
-    st.warning('No Manual Review Wanted')
     if col_names==[]:
         return df
     options=list(my_dict.keys())
     options.append("Other- Enter Manually")
     for col in col_names:
+        name=""
         name = st.selectbox("Please select Appropraite Column Name for "+col,options)
-        if not name:
+        if name=="":
           st.warning('Please select option.')
           st.stop()
         if name=="Other- Enter Manually":
+            name=""
             name = st.text_input('Manual Input Name for Column')
-            if not name:
+            if name=="":
                 st.warning('Please provide column name.')
                 st.stop()
         df.rename(columns={col: name})                         
