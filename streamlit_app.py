@@ -405,7 +405,8 @@ def faker_gn(sample_size):
     new_column_names,canonical_lst=column_matching(list(data_sample.columns))
     data_sample.columns=new_column_names
     st.write(canonical_lst)
-    data_sample=manual_rename(data_sample,  canonical_lst)                      
+    data_sample=manual_rename(data_sample,  canonical_lst)   
+    st.write(data_sample.head(5))
     dfA1=data_sample
     dfB1=data_sample
     dfA1["initials"] = (dfA1["First Name"].str[0]  + dfA1["Last Name"].str[0])
