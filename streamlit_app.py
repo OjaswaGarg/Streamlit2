@@ -383,8 +383,8 @@ def faker_gn(sample_size):
     dfB1=data_sample
     dfA1["initials"] = (dfA1["First Name"].str[0]  + dfA1["Last Name"].str[0])
     dfB1["initials"] = (dfB1["First Name"].str[0]  + dfB1["Last Name"].str[0])
-    dfA1["Date of Birth"] = dfA1["Date of Birth"].str.replace('-', "")
-    dfB1["Date of Birth"] = dfB1["Date of Birth"].str.replace('-', "")
+    dfA1["Date of Birth"] = dfA1["Date of Birth"].astype(str).str.replace('-', "")
+    dfB1["Date of Birth"] = dfB1["Date of Birth"].astype(str).str.replace('-', "")
     dfA1["soc_sec_id"] = dfA1["Social Security Number"].str.replace('-', "")
     dfB1["soc_sec_id"] = dfB1["Social Security Number"].str.replace('-', "")
     dfA1['address']=dfA1['Street Number']+" "+dfA1['Address1']+" "+dfA1['Address2']
