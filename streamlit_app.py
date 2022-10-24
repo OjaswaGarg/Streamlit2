@@ -191,7 +191,7 @@ def data_creation(entries):
         date_of_birth.append(fake.date_of_birth())
         
     df = pd.DataFrame(list(zip(given_name, surname, street_number, address_1, address_2, suburb,  postcode,state,date_of_birth,soc_sec_id)), 
-                      columns= ['given_name_1', 'surname2', 'street_number', 'address_1', 'address_2', 'suburb','postcode', 'state','date_of_birth','soc_sec_id'])
+                      columns= ['given_name_2', 'surname', 'street_number', 'address_1', 'address_2', 'suburb','postcode_1', 'state','date_of_birth','soc_sec_id'])
     return df  
 class_names = ["No Match", "Match"]
 my_dict= {'name': 'First Name', 'givenname': 'First Name', 'fname': 'First Name', 'firstname': 'First Name',
@@ -382,8 +382,8 @@ def manual_rename(df,col_names):
         return df
     if col_names==[]:
         return df
-    options=list(my_dict.keys())
-    options.append("Other- Enter Manually")
+    options=set(my_dict.values())    
+    options.add("Other- Enter Manually")
     for col in col_names:
         name=""
         name = st.selectbox("Please select Appropraite Column Name for "+col,options)
