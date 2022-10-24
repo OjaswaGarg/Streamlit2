@@ -384,7 +384,7 @@ def manual_rename(df,col_names):
     options=list(my_dict.keys())
     options.append("Other- Enter Manually")
     for col in col_names:
-        name = st.select("Please select Appropraite Column Name for "+col,options)
+        name = st.selectbox("Please select Appropraite Column Name for "+col,options)
         if not name:
           st.warning('Please select option.')
           st.stop()
