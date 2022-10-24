@@ -399,18 +399,16 @@ def manual_rename(df,col_names):
             if name=="":
                 st.warning('Please provide column name.')
                 st.stop()
-        st.write(col,name) 
         if name in options:
             options.remove(name)
         df.rename(columns={col: name},inplace = True)                         
     return df                             
 
-@st.cache(suppress_st_warning=True,allow_output_mutation=True)
+#@st.cache(suppress_st_warning=True,allow_output_mutation=True)
 def faker_gn(sample_size):
     data_sample=data_creation(entries=sample_size)
     new_column_names,canonical_lst=column_matching(list(data_sample.columns))
     data_sample.columns=new_column_names
-    st.write(canonical_lst)
     data_sample=manual_rename(data_sample,  canonical_lst)   
     st.write(data_sample.head(5))
     dfA1=data_sample
