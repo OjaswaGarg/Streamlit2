@@ -588,6 +588,11 @@ with upload_data:
     dataframe2.columns=new_column_names
     dataframe2=manual_rename(dataframe2,  canonical_lst)   
     st.write(dataframe2.head(5))
+    
+    dataframe1["initials"] = (dataframe1["First Name"].str[0]  + dataframe1["Last Name"].str[0])
+    dataframe2["initials"] = (dataframe2["First Name"].str[0]  + dataframe2["Last Name"].str[0])
+    
+    
     dataframe1_hash=dataframe1.copy()
     dataframe2_hash=dataframe2.copy()
     cand_links=candidate_links_func(dataframe1,dataframe2,"initials")
