@@ -46,6 +46,7 @@ dataset=st.container()
 featurest=st.container()
 model_training=st.container()
 faker_data=st.container()
+upload_data=st.container()
 from snorkel.labeling import labeling_function
 from snorkel.labeling import PandasLFApplier
 from snorkel.labeling import LFAnalysis
@@ -554,5 +555,11 @@ with faker_data:
               st.write(f1["Match"]*100)
               d1=dfA1.iloc[[show['level_0'].values[i],show['level_1'].values[i]]]
               st.write(d1)
-            
-        st.markdown("[Scroll up](#capstone-project)",unsafe_allow_html=True)      
+ 
+
+with upload_data:
+    uploaded_file = st.file_uploader("Choose a file")
+    # Can be used wherever a "file-like" object is accepted:
+    dataframe = pd.read_csv(uploaded_file)
+    st.write(dataframe)
+    st.markdown("[Scroll up](#capstone-project)",unsafe_allow_html=True)      
