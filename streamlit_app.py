@@ -604,7 +604,7 @@ if name in "nN":
     with encryption_required:
         st.markdown('<p class="font2">Encrypting Your Dataset</p>', unsafe_allow_html=True)
         grams=st.slider("What would be the N Grams for Bloom Filter Encryption?", min_value=2,max_value=5,value=3,step=1, key = "2arb")
-        prime_numbers = st.multiselect("Please select Prime Numbers for Hashing", [83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149], key = "2arb")
+        prime_numbers = st.multiselect("Please select Prime Numbers for Hashing", [83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149], key = "3arb")
         if not prime_numbers:
           st.warning('Please input prime number.')
           st.stop()
