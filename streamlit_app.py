@@ -633,6 +633,7 @@ with encrypion_not_required:
     encrypt_features_df1=encrypt_features_df1[encrypt_features_df1["level_0"]!=encrypt_features_df1["level_1"]]
     show=encrypt_features_df1[encrypt_features_df1['Match']>=0]
     st.markdown('<p class="font2">Top Matches for Encrypted Data', unsafe_allow_html=True)
+    Display_Matches=st.slider("How many top Macthes to display?", min_value=1,max_value=10,value=5,step=1,key='klop') 
     show.sort_values(['Match'],ascending=False,inplace=True)
     show=show.reset_index(drop=True)
     display=0
