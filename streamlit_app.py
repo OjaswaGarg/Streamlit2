@@ -563,7 +563,7 @@ with upload_data:
     if not uploaded_file:
         st.warning('Please upload File.')
         st.stop()  
-    if  ".csv" not in uploaded_file:
+    while  ".csv" not in uploaded_file:
         st.warning('Please upload a csv File.')
         st.stop()
     st.success("Thank you for inputting First File.")    
@@ -572,7 +572,7 @@ with upload_data:
     if not uploaded_file1:
         st.warning('Please upload File.')
         st.stop()
-    if  ".csv" not in uploaded_file1:
+    while ".csv" not in uploaded_file1:
         st.warning('Please upload a csv File.')
         st.stop()
     st.success("Thank you for inputting Second File.")      
