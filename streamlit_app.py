@@ -644,8 +644,8 @@ with encrypion_not_required:
           f1=show.iloc[i]
           st.write(f1["Match"]*100)
           d1=dataframe1.iloc[show['level_0'].values[i]]
-          st.write(d1)
           d2=dataframe2.iloc[show['level_1'].values[i]]
+          d1.concat(d2,inplace=True)
           st.write(d1)        
 
     
