@@ -245,8 +245,8 @@ def data():
     dfB["Date of Birth"] = dfB["Date of Birth"].str.replace('-', "")
     dfA["soc_sec_id"] = dfA["Social Security Number"].str.replace('-', "")
     dfB["soc_sec_id"] = dfB["Social Security Number"].str.replace('-', "")
-    dfA['address']=dfA['Street Number']+" "+dfA['Address1']+" "+dfA['Address2']
-    dfB['address']=dfB['Street Number']+" "+dfB['Address1']+" "+dfB['Address2'] 
+    dfA['Address']=dfA['Street Number']+" "+dfA['Address1']+" "+dfA['Address2']
+    dfB['Address']=dfB['Street Number']+" "+dfB['Address1']+" "+dfB['Address2'] 
     features=data1(dfA,dfB,"initials")
     return dfA,dfB,true_links,features
 
