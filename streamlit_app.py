@@ -645,21 +645,9 @@ with encrypion_not_required:
           st.write(f1["Match"]*100)
           d1=dataframe1.iloc[show['level_0'].values[i]]
           d2=dataframe2.iloc[show['level_1'].values[i]]
-          d1.concat(d2,inplace=True)
-          st.write(d1)        
+          d3=pd.concat([d1, d2], ignore_index=True)
+          st.write(d3)        
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
     
     st.markdown("[Scroll up](#capstone-project)",unsafe_allow_html=True)      
