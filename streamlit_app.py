@@ -562,9 +562,8 @@ with upload_data:
     uploaded_file= st.file_uploader("Choose your First File. File should be in csv format")
     while not uploaded_file:
         st.warning('Please upload File.')
-        st.stop()  
-    st.write(uploaded_file.name)    
-    while  ".csv" not in uploaded_file:
+        st.stop()      
+    while  "csv" not in uploaded_file.type:
         st.warning('Please upload a csv File.')
         st.stop()
     st.success("Thank you for inputting First File.")    
@@ -573,7 +572,7 @@ with upload_data:
     if not uploaded_file1:
         st.warning('Please upload File.')
         st.stop()
-    while ".csv" not in uploaded_file1:
+    while "csv" not in uploaded_file1.type:
         st.warning('Please upload a csv File.')
         st.stop()
     st.success("Thank you for inputting Second File.")      
