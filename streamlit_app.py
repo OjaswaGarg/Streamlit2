@@ -162,7 +162,7 @@ def data1(dfA,dfB,blocker=""):
       compare.string('First Name', 'First Name', method='cosine', label="First Name")
       compare.string('Last Name', 'Last Name', method='cosine', label="Last Name")
       compare.string('Suburb', 'Suburb', method='cosine', label="Suburb")
-      compare.string('State', 'State', method='cosine', label="state")
+      compare.string('State', 'State', method='cosine', label="State")
       compare.string('address', 'address', method='cosine', label="address")
       compare.string("Date of Birth","Date of Birth",method='cosine', label="Date of Birth")
       features = compare.compute(candidate_links, dfA, dfB)
