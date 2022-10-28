@@ -163,7 +163,7 @@ def data1(dfA,dfB,blocker=""):
       compare.string('Last Name', 'Last Name', method='cosine', label="Last Name")
       compare.string('Suburb', 'Suburb', method='cosine', label="Suburb")
       compare.string('State', 'State', method='cosine', label="State")
-      compare.string('address', 'address', method='cosine', label="address")
+      compare.string('Address', 'Address', method='cosine', label="Address")
       compare.string("Date of Birth","Date of Birth",method='cosine', label="Date of Birth")
       features = compare.compute(candidate_links, dfA, dfB)
       return features
@@ -200,8 +200,8 @@ class_names = ["No Match", "Match"]
 my_dict= {'name': 'First Name', 'givenname': 'First Name', 'fname': 'First Name', 'firstname': 'First Name',
           'surname': 'Last Name', 'familyname': 'Last Name', 'lname': 'Last Name', 'lastname': 'Last Name',
           'streetno': 'Street Number', 'stno': 'Street Number', 'streetnumber': 'Street Number',
-          'streetaddress': 'Address1', 'addr': 'Address1', 'addressline1': 'Address1', 'address':'Address1', 'address1':'Address1',
-          'unitnumber': 'Address2', 'apartmentnumber': 'Address2', 'addr2': 'Address2', 'addressline2': 'Address2', 'address2': 'Address2',
+          'streetaddress': 'Address', 'addr': 'Address', 'addressline1': 'Address1', 'address':'Address', 'address1':'Address1',
+          'unitnumber': 'Address2', 'apartmentnumber': 'Address', 'addr2': 'Address2', 'addressline2': 'Address2', 'address2': 'Address2',
           'county': 'Suburb', 'city': 'Suburb', 'area': 'Suburb', 'region': 'Suburb', 'suburb':'Suburb',
           'zipcode':'Postcode', 'areacode':'Postcode','zip':'Postcode', 'postalcode':'Postcode', 'postcode':'Postcode',
           'state': 'State',
@@ -424,8 +424,8 @@ def faker_gn(sample_size):
     dfB1["Date of Birth"] = dfB1["Date of Birth"].astype(str).str.replace('-', "")
     dfA1["soc_sec_id"] = dfA1["Social Security Number"].str.replace('-', "")
     dfB1["soc_sec_id"] = dfB1["Social Security Number"].str.replace('-', "")
-    dfA1['address']=dfA1['Street Number']+" "+dfA1['Address1']+" "+dfA1['Address2']
-    dfB1['address']=dfB1['Street Number']+" "+dfB1['Address1']+" "+dfB1['Address2'] 
+    dfA1['Address']=dfA1['Street Number']+" "+dfA1['Address1']+" "+dfA1['Address2']
+    dfB1['Address']=dfB1['Street Number']+" "+dfB1['Address1']+" "+dfB1['Address2'] 
     features1=data1(dfA1,dfB1,"initials")
     return dfA1,dfB1,features1  
 @st.cache(suppress_st_warning=True,allow_output_mutation=True)
@@ -458,7 +458,7 @@ def features_encrypt(dfA,dfB,candidate_links):
       div=math.sqrt(str1_l2*str2_l2) 
       return sim/div    
     merge_list=[]
-    columns_model=["First Name","Last Name","Suburb","State","address","Date of Birth"]
+    columns_model=["First Name","Last Name","Suburb","State","Address","Date of Birth"]
     for index in range(len(candidate_links)):
       i=candidate_links[index]
       merge_list.append([])
