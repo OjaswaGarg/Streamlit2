@@ -487,7 +487,7 @@ with faker_data:
         st.markdown('<p class="font2">Running Model on Faker Data</p>', unsafe_allow_html=True)
         sample_size=st.slider("What would be the sample size of Fake Data?", min_value=100,max_value=5000,value=500,step=100)
         dfA1,dfB1,featuressour =faker_gn(sample_size)
-        print(list(featuressour.columns))
+        st.write(list(featuressour.columns))
         features1=featuressour.copy()
         if models=="Gradient Boosting" or models=="Logistic Regression":
             input1=features1
