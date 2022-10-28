@@ -47,6 +47,8 @@ featurest=st.container()
 model_training=st.container()
 faker_data=st.container()
 upload_data=st.container()
+encryption_required=st.container()
+encrypion_not_required=st.container()
 from snorkel.labeling import labeling_function
 from snorkel.labeling import PandasLFApplier
 from snorkel.labeling import LFAnalysis
@@ -577,4 +579,55 @@ with upload_data:
         st.stop()
     st.success("Thank you for inputting Second File.")      
     dataframe2 = pd.read_csv(uploaded_file1)    
+    
+    st.markdown('<p class="font3">Column Name Matching on Dataset 1', unsafe_allow_html=True)
+    new_column_names,canonical_lst=column_matching(list(dataframe1.columns))
+    dataframe1.columns=new_column_names
+    dataframe1=manual_rename(dataframe1,  canonical_lst)   
+    st.write(dataframe1.head(5))
+
+    st.markdown('<p class="font3">Column Name Matching on Dataset 2', unsafe_allow_html=True)
+    new_column_names,canonical_lst=column_matching(list(dataframe2.columns))
+    dataframe2.columns=new_column_names
+    dataframe2=manual_rename(dataframe2,  canonical_lst)   
+    st.write(dataframe2.head(5))
+    
+    
+    
+    
+    name = st.text_input('Is the uploaded data encrypted? Y/N')
+    if name=="":
+      st.warning('Please input an option.')
+      st.stop()
+if name in "yY":
+    with encryption_required:
+        st.markdown('<p class="font2">Encryption Part</p>', unsafe_allow_html=True)
+        grams=st.slider("What would be the N Grams for Bloom Filter Encryption?", min_value=2,max_value=5,value=3,step=1)
+        prime_numbers = st.multiselect("Please select Prime Numbers for Hashing", [83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149])
+        if not prime_numbers:
+          st.warning('Please input prime number.')
+          st.stop()
+        st.success('Thank you for inputting prime numbers.')
+        st.write(grams)
+        st.write(prime_numbers)
+        dataframe1_hash=bloom_grams(dataframe1,grams,prime_numbers)
+        dataframe2_hash=bloom_grams(dataframe2,grams,prime_numbers)
+        st.markdown('<p class="font2">Encrypted DataFrame 1</p>', unsafe_allow_html=True)
+        st.write(dataframe1_hash.head(5))     
+        st.markdown('<p class="font2">Encrypted DataFrame 2</p>', unsafe_allow_html=True)
+        st.write(dataframe2_hash.head(5))    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     st.markdown("[Scroll up](#capstone-project)",unsafe_allow_html=True)      
