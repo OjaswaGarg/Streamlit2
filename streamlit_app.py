@@ -191,7 +191,7 @@ def data_creation(entries):
         date_of_birth.append(fake.date_of_birth())
         
     df = pd.DataFrame(list(zip(given_name, surname, street_number, address_1, address_2, suburb,  postcode,state,date_of_birth,soc_sec_id)), 
-                      columns= ['given_name_2', 'surname', 'street_number', 'address_1', 'address_2', 'suburb','postcode_1', 'state','date_of_birth','soc_sec_id'])
+                      columns= ['given_name', 'surname', 'street_number', 'address_1', 'address_2', 'suburb','postcode', 'state','date_of_birth','soc_sec_id'])
     return df  
 class_names = ["No Match", "Match"]
 my_dict= {'name': 'First Name', 'givenname': 'First Name', 'fname': 'First Name', 'firstname': 'First Name',
@@ -372,6 +372,8 @@ with  model_training:
            st.pyplot(fig) 
 
 def manual_rename(df,col_names):
+    if col_names==[]:
+        return df
     name=""
     name = st.text_input('Manual Review of Unmatched Column Names wanted? Y/N')
     if name=="":
@@ -465,6 +467,12 @@ def features_encrypt(dfA,dfB,candidate_links):
       merge_list[-1].append(cosine_sim(val1[11],val2[11]))
       merge_list[-1].append(cosine_sim(val1[8],val2[8]))
     return merge_list
+
+
+
+
+
+
 with faker_data:
     name = st.text_input('Do you want to test Feature Selection model on Faker Data? Y/N')
     if name=="":
