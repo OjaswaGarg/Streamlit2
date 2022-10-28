@@ -645,7 +645,7 @@ with encrypion_not_required:
           st.write(f1["Match"]*100)
           d1=dataframe1.iloc[show['level_0'].values[i]]
           d2=dataframe2.iloc[show['level_1'].values[i]]
-          st.write(d1)
+          st.write(d1.type)
           st.write(d2) 
           d3=pd.concat([d1, d2], join="inner")
           st.write(d3)        
