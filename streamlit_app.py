@@ -487,6 +487,7 @@ with faker_data:
         st.markdown('<p class="font2">Running Model on Faker Data</p>', unsafe_allow_html=True)
         sample_size=st.slider("What would be the sample size of Fake Data?", min_value=100,max_value=5000,value=500,step=100)
         dfA1,dfB1,featuressour =faker_gn(sample_size)
+        print(list(featuressour.columns))
         features1=featuressour.copy()
         if models=="Gradient Boosting" or models=="Logistic Regression":
             input1=features1
@@ -527,8 +528,8 @@ with faker_data:
         dfA1_hash=bloom_grams(dfA1,grams,prime_numbers)
         st.markdown('<p class="font2">Encrypted Fake Data</p>', unsafe_allow_html=True)
         st.write(dfA1_hash.head(5)) 
-
         dfB1_hash=dfA1_hash.copy()
+        
         cand_links=candidate_links_func(dfA1,dfB1,"initials")
         merge_list= features_encrypt(dfA1_hash,dfB1_hash,cand_links)
         encrypt_features_df=pd.DataFrame(merge_list,columns=list(featuressour.columns))
@@ -591,17 +592,16 @@ with upload_data:
     dataframe2.columns=new_column_names
     dataframe2=manual_rename(dataframe2,  canonical_lst)   
     st.write(dataframe2.head(5))
-    
-    
-    
-    
+    dataframe1_hash=dataframe1.copy()
+    dataframe2_hash=dataframe2.copy()
+    cand_links=candidate_links_func(dataframe1,dataframe2,"initials")
     name = st.text_input('Is the uploaded data encrypted? Y/N')
     if name=="":
       st.warning('Please input an option.')
       st.stop()
 if name in "nN":
     with encryption_required:
-        st.markdown('<p class="font2">Encryption Part</p>', unsafe_allow_html=True)
+        st.markdown('<p class="font2">Encrypting Your Dataset</p>', unsafe_allow_html=True)
         grams=st.slider("What would be the N Grams for Bloom Filter Encryption?", min_value=2,max_value=5,value=3,step=1)
         prime_numbers = st.multiselect("Please select Prime Numbers for Hashing", [83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149])
         if not prime_numbers:
@@ -616,6 +616,36 @@ if name in "nN":
         st.write(dataframe1_hash.head(5))     
         st.markdown('<p class="font2">Encrypted DataFrame 2</p>', unsafe_allow_html=True)
         st.write(dataframe2_hash.head(5))    
+
+with encrypion_not_required:
+    merge_list= features_encrypt(dataframe1_hash,dataframe2_hash,cand_links)
+    encrypt_features_df=pd.DataFrame(merge_list,columns=list(featuressour.columns))
+    encrypt_features_df.index=cand_links
+    encrypt_features_df1=encrypt_features_df.copy()
+    if models=="Gradient Boosting" or models=="Logistic Regression":
+        encrypt_input1=encrypt_features_df1
+    else:
+        L_fake = applier.apply(df=encrypt_features_df1)
+        encrypt_input1=L_fake 
+
+    encrypt_features_df1['Match']=model_final.predict_proba(encrypt_input1)[:,1]
+    encrypt_features_df1.reset_index(inplace=True)
+    encrypt_features_df1=encrypt_features_df1[encrypt_features_df1["level_0"]!=encrypt_features_df1["level_1"]]
+    show=encrypt_features_df1[encrypt_features_df1['Match']>=0]
+    st.markdown('<p class="font2">Top Matches for Encrypted Data', unsafe_allow_html=True)
+    show.sort_values(['Match'],ascending=False,inplace=True)
+    show=show.reset_index(drop=True)
+    display=0
+    for i in range(0,len(show),2):
+          display+=1
+          if display==Display_Matches:
+              break
+          st.markdown('<p class="font3">Probability of Matching', unsafe_allow_html=True)
+          f1=show.iloc[i]
+          st.write(f1["Match"]*100)
+          d1=dfA1.iloc[[show['level_0'].values[i],show['level_1'].values[i]]]
+          st.write(d1)
+
     
     
     
