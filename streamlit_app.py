@@ -260,7 +260,7 @@ with header:
     st.markdown('<p class="font11">Welcome to Record Linkage</p>',unsafe_allow_html=True)
     
 with dataset:
-    st.markdown('<p class="font2">Data from Record Linkage Package</p>', unsafe_allow_html=True)
+    st.markdown('<p class="font2">Data from Record Linkage Package used for Feature Selection Modeling</p>', unsafe_allow_html=True)
     dfA, dfB, true_links,features=data()
     st.markdown('<p class="font3">Few Lines of Data', unsafe_allow_html=True)
     st.write(dfA.head(5))  
@@ -273,7 +273,7 @@ with  featurest:
     X=data.drop(['Target'],axis=1)
     Y=data['Target']
     X_train,X_test,y_train,y_test=train_test_split(X,Y,random_state=42,test_size=0.2)
-    st.markdown('<p class="font3">Input train Dataset', unsafe_allow_html=True)
+    st.markdown('<p class="font3">Input train Dataset: Applied cosine similarity between two records', unsafe_allow_html=True)
     st.write(X_train[:5])
     st.markdown('<p class="font3">Actual Output train Dataset', unsafe_allow_html=True)
     st.write(y_train[:5])
@@ -318,7 +318,7 @@ def WS(X_train,X_test,model_type):
     
 with  model_training:
     if models=="Gradient Boosting":
-        st.markdown('<p class="font2">Applying Gradient Boosting to Model</p>', unsafe_allow_html=True)
+        st.markdown('<p class="font2">Applying Gradient Boosting to Model Feature Importance</p>', unsafe_allow_html=True)
         n_estimators=st.slider("What would be the number of estimators of the model?", min_value=10,max_value=100,value=100,step=10)
         max_depth=st.slider("What would be the max_depth of the model?", min_value=1,max_value=10,value=8,step=1)
         accuracy,model_final,X_test,y_test,y_pred=Gradient(n_estimators,max_depth)
@@ -333,7 +333,7 @@ with  model_training:
         st.write("Recall: ", recall_score(y_test, y_pred, labels=class_names).round(2)) 
         plot_metrics(model_final,metrics,X_test,y_test)
     elif models=="Logistic Regression":
-        st.markdown('<p class="font2">Applying Logistic Regression to Model</p>', unsafe_allow_html=True)
+        st.markdown('<p class="font2">Applying Logistic Regression to Model Feature Importance</p>', unsafe_allow_html=True)
     
         penalty=st.select_slider('Select penalty type',options=['l1', 'l2', 'elasticnet', 'none'],value=('l2'))
         C=st.slider("What would be the value of C(Inverse of regularization strength)?", min_value=0.1,max_value=2.0,value=1.0,step=0.1)        
@@ -349,7 +349,7 @@ with  model_training:
         st.write("Recall: ", recall_score(y_test, y_pred, labels=class_names).round(2)) 
         plot_metrics(model_final,metrics,X_test,y_test)
     elif models=="Weak Supervision":
-       st.markdown('<p class="font2">Applying Snorkel to Model</p>', unsafe_allow_html=True)
+       st.markdown('<p class="font2">Applying Snorkel to Model Feature Importance</p>', unsafe_allow_html=True)
        model_type=st.select_slider('Select model type',options=['MajorityLabelVoter', 'LabelModel'],value=('LabelModel'))
        data=features
        df = data.sample(frac=1)
