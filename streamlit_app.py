@@ -563,7 +563,7 @@ with upload_data:
     while not uploaded_file:
         st.warning('Please upload File.')
         st.stop()  
-    st.write(uploaded_file)    
+    st.write(uploaded_file.name)    
     while  ".csv" not in uploaded_file:
         st.warning('Please upload a csv File.')
         st.stop()
