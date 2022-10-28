@@ -209,9 +209,9 @@ my_dict= {'name': 'First Name', 'givenname': 'First Name', 'fname': 'First Name'
 st.sidebar.title("Interactive") 
 
 
-models=st.sidebar.selectbox("How would you like the data to be modeled?",("Gradient Boosting", "Logistic Regression", "Weak Supervision"))
+models=st.sidebar.selectbox("How would you Feature Importance to be modeled?",("Gradient Boosting", "Logistic Regression", "Weak Supervision"))
 
-metrics = st.sidebar.multiselect("What metrics to plot?", ("Confusion Matrix", "ROC Curve", "Precision-Recall Curve"))
+metrics = st.sidebar.multiselect("What metrics to plot for the model?", ("Confusion Matrix", "ROC Curve", "Precision-Recall Curve"))
 
 
 def column_matching(column_names):
@@ -466,77 +466,85 @@ def features_encrypt(dfA,dfB,candidate_links):
       merge_list[-1].append(cosine_sim(val1[8],val2[8]))
     return merge_list
 with faker_data:
-    st.markdown('<p class="font2">Running Model on Faker Data</p>', unsafe_allow_html=True)
-    sample_size=st.slider("What would be the sample size of Fake Data?", min_value=100,max_value=5000,value=500,step=100)
-    dfA1,dfB1,featuressour =faker_gn(sample_size)
-    features1=featuressour.copy()
-    if models=="Gradient Boosting" or models=="Logistic Regression":
-        input1=features1
-    else:
-        L_fake = applier.apply(df=features1)
-        input1=L_fake 
-    #Match_Rate=st.slider("What would be the Probabilty Match Rate?", min_value=0.1,max_value=1.0,value=0.1,step=0.1)
-    Display_Matches=st.slider("How many top Macthes to display?", min_value=1,max_value=10,value=5,step=1)    
-    features1['Match']=model_final.predict_proba(input1)[:,1]
-    features1.reset_index(inplace=True)
-    features1=features1[features1["level_0"]!=features1["level_1"]]
-    show=features1[features1['Match']>=0]
-    
-    st.markdown('<p class="font2">Number of Matches for Unencrypted Data', unsafe_allow_html=True)
-    st.write(len(show)//2)
-    show.sort_values(['Match'],ascending=False,inplace=True)
-    show=show.reset_index(drop=True)
-    display=0
-    for i in range(0,len(show),2):
-          display+=1
-          if display==Display_Matches:
-              break
-          st.markdown('<p class="font3">Probability of Matching', unsafe_allow_html=True)
-          f1=show.iloc[i]
-          st.write(f1["Match"]*100)
-          d1=dfA1.iloc[[show['level_0'].values[i],show['level_1'].values[i]]]
-          st.write(d1)
-        
-    st.markdown('<p class="font2">Encryption Part</p>', unsafe_allow_html=True)
-    grams=st.slider("What would be the N Grams for Bloom Filter Encryption?", min_value=2,max_value=5,value=3,step=1)
-    prime_numbers = st.multiselect("Please select Prime Numbers for Hashing", [83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149])
-    if not prime_numbers:
-      st.warning('Please input prime number.')
+    name = st.text_input('Do you want to test Feature Selection model on Faker Data? Y/N')
+    if name=="":
+      st.warning('Please input an option.')
       st.stop()
-    st.success('Thank you for inputting prime numbers.')
-    st.write(grams)
-    st.write(prime_numbers)
-    dfA1_hash=bloom_grams(dfA1,grams,prime_numbers)
-    st.markdown('<p class="font2">Encrypted Fake Data</p>', unsafe_allow_html=True)
-    st.write(dfA1_hash.head(5)) 
+    if name in "nN":
+        st.warning('No Testing on Faker Data Required')
+    else:    
+        st.markdown('<p class="font2">Running Model on Faker Data</p>', unsafe_allow_html=True)
+        sample_size=st.slider("What would be the sample size of Fake Data?", min_value=100,max_value=5000,value=500,step=100)
+        dfA1,dfB1,featuressour =faker_gn(sample_size)
+        features1=featuressour.copy()
+        if models=="Gradient Boosting" or models=="Logistic Regression":
+            input1=features1
+        else:
+            L_fake = applier.apply(df=features1)
+            input1=L_fake 
+        #Match_Rate=st.slider("What would be the Probabilty Match Rate?", min_value=0.1,max_value=1.0,value=0.1,step=0.1)
+        Display_Matches=st.slider("How many top Macthes to display?", min_value=1,max_value=10,value=5,step=1)    
+        features1['Match']=model_final.predict_proba(input1)[:,1]
+        features1.reset_index(inplace=True)
+        features1=features1[features1["level_0"]!=features1["level_1"]]
+        show=features1[features1['Match']>=0]
 
-    dfB1_hash=dfA1_hash.copy()
-    cand_links=candidate_links_func(dfA1,dfB1,"initials")
-    merge_list= features_encrypt(dfA1_hash,dfB1_hash,cand_links)
-    encrypt_features_df=pd.DataFrame(merge_list,columns=list(featuressour.columns))
-    encrypt_features_df.index=cand_links
-    encrypt_features_df1=encrypt_features_df.copy()
-    if models=="Gradient Boosting" or models=="Logistic Regression":
-        encrypt_input1=encrypt_features_df1
-    else:
-        L_fake = applier.apply(df=encrypt_features_df1)
-        encrypt_input1=L_fake 
-    
-    encrypt_features_df1['Match']=model_final.predict_proba(encrypt_input1)[:,1]
-    encrypt_features_df1.reset_index(inplace=True)
-    encrypt_features_df1=encrypt_features_df1[encrypt_features_df1["level_0"]!=encrypt_features_df1["level_1"]]
-    show=encrypt_features_df1[encrypt_features_df1['Match']>=0]
-    st.markdown('<p class="font2">Top Matches for Encrypted Data', unsafe_allow_html=True)
-    show.sort_values(['Match'],ascending=False,inplace=True)
-    show=show.reset_index(drop=True)
-    display=0
-    for i in range(0,len(show),2):
-          display+=1
-          if display==Display_Matches:
-              break
-          st.markdown('<p class="font3">Probability of Matching', unsafe_allow_html=True)
-          f1=show.iloc[i]
-          st.write(f1["Match"]*100)
-          d1=dfA1.iloc[[show['level_0'].values[i],show['level_1'].values[i]]]
-          st.write(d1)
-    st.markdown("[Scroll up](#capstone-project)",unsafe_allow_html=True)      
+        st.markdown('<p class="font2">Number of Matches for Unencrypted Data', unsafe_allow_html=True)
+        st.write(len(show)//2)
+        show.sort_values(['Match'],ascending=False,inplace=True)
+        show=show.reset_index(drop=True)
+        display=0
+        for i in range(0,len(show),2):
+              display+=1
+              if display==Display_Matches:
+                  break
+              st.markdown('<p class="font3">Probability of Matching', unsafe_allow_html=True)
+              f1=show.iloc[i]
+              st.write(f1["Match"]*100)
+              d1=dfA1.iloc[[show['level_0'].values[i],show['level_1'].values[i]]]
+              st.write(d1)
+
+        st.markdown('<p class="font2">Encryption Part</p>', unsafe_allow_html=True)
+        grams=st.slider("What would be the N Grams for Bloom Filter Encryption?", min_value=2,max_value=5,value=3,step=1)
+        prime_numbers = st.multiselect("Please select Prime Numbers for Hashing", [83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149])
+        if not prime_numbers:
+          st.warning('Please input prime number.')
+          st.stop()
+        st.success('Thank you for inputting prime numbers.')
+        st.write(grams)
+        st.write(prime_numbers)
+        dfA1_hash=bloom_grams(dfA1,grams,prime_numbers)
+        st.markdown('<p class="font2">Encrypted Fake Data</p>', unsafe_allow_html=True)
+        st.write(dfA1_hash.head(5)) 
+
+        dfB1_hash=dfA1_hash.copy()
+        cand_links=candidate_links_func(dfA1,dfB1,"initials")
+        merge_list= features_encrypt(dfA1_hash,dfB1_hash,cand_links)
+        encrypt_features_df=pd.DataFrame(merge_list,columns=list(featuressour.columns))
+        encrypt_features_df.index=cand_links
+        encrypt_features_df1=encrypt_features_df.copy()
+        if models=="Gradient Boosting" or models=="Logistic Regression":
+            encrypt_input1=encrypt_features_df1
+        else:
+            L_fake = applier.apply(df=encrypt_features_df1)
+            encrypt_input1=L_fake 
+
+        encrypt_features_df1['Match']=model_final.predict_proba(encrypt_input1)[:,1]
+        encrypt_features_df1.reset_index(inplace=True)
+        encrypt_features_df1=encrypt_features_df1[encrypt_features_df1["level_0"]!=encrypt_features_df1["level_1"]]
+        show=encrypt_features_df1[encrypt_features_df1['Match']>=0]
+        st.markdown('<p class="font2">Top Matches for Encrypted Data', unsafe_allow_html=True)
+        show.sort_values(['Match'],ascending=False,inplace=True)
+        show=show.reset_index(drop=True)
+        display=0
+        for i in range(0,len(show),2):
+              display+=1
+              if display==Display_Matches:
+                  break
+              st.markdown('<p class="font3">Probability of Matching', unsafe_allow_html=True)
+              f1=show.iloc[i]
+              st.write(f1["Match"]*100)
+              d1=dfA1.iloc[[show['level_0'].values[i],show['level_1'].values[i]]]
+              st.write(d1)
+            
+        st.markdown("[Scroll up](#capstone-project)",unsafe_allow_html=True)      
