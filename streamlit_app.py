@@ -458,7 +458,7 @@ def features_encrypt(dfA,dfB,candidate_links):
       div=math.sqrt(str1_l2*str2_l2) 
       return sim/div    
     merge_list=[]
-    columns_model=["First Name","Last Name","Suburb","state","address","Date of Birth"]
+    columns_model=["First Name","Last Name","Suburb","State","address","Date of Birth"]
     for index in range(len(candidate_links)):
       i=candidate_links[index]
       merge_list.append([])
