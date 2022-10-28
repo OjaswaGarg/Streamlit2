@@ -560,11 +560,21 @@ with faker_data:
 with upload_data:
     st.markdown('<p class="font2">Apply Record Linkage on your own Dataset</p>', unsafe_allow_html=True)
     uploaded_file= st.file_uploader("Choose your First File. File should be in csv format")
-    while ".csv" not in uploaded_file:
-        uploaded_file = st.file_uploader("File should be in csv format")
+    if not uploaded_file:
+        st.warning('Please upload File.')
+        st.stop()
+    st.success("Thank you for inputting First File.")  
+    if  ".csv" not in uploaded_file:
+        st.warning('Please upload a csv File.')
+        st.stop()
     dataframe1 = pd.read_csv(uploaded_file)
-    uploaded_file=st.file_uploader("Choose your Second File. File should be in csv format")
-    while ".csv" in uploaded_file:
-        uploaded_file = st.file_uploader("File should be in csv format")
-    dataframe2 = pd.read_csv(uploaded_file)
+    uploaded_file1= st.file_uploader("Choose your Second File. File should be in csv format")
+    if not uploaded_file1:
+        st.warning('Please upload File.')
+        st.stop()
+    st.success("Thank you for inputting Second File.")  
+    if  ".csv" not in uploaded_file1:
+        st.warning('Please upload a csv File.')
+        st.stop()
+    dataframe2 = pd.read_csv(uploaded_file1)    
     st.markdown("[Scroll up](#capstone-project)",unsafe_allow_html=True)      
