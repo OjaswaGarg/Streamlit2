@@ -560,9 +560,10 @@ with faker_data:
 with upload_data:
     st.markdown('<p class="font2">Apply Record Linkage on your own Dataset</p>', unsafe_allow_html=True)
     uploaded_file= st.file_uploader("Choose your First File. File should be in csv format")
-    if not uploaded_file:
+    while not uploaded_file:
         st.warning('Please upload File.')
         st.stop()  
+    st.write(uploaded_file)    
     while  ".csv" not in uploaded_file:
         st.warning('Please upload a csv File.')
         st.stop()
