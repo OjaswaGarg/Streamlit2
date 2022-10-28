@@ -458,18 +458,16 @@ def features_encrypt(dfA,dfB,candidate_links):
       div=math.sqrt(str1_l2*str2_l2) 
       return sim/div    
     merge_list=[]
+    columns_model=["First Name","Last Name","Suburb","state","address","Date of Birth"]
     for index in range(len(candidate_links)):
       i=candidate_links[index]
-      val1=dfA.loc[i[0]].tolist()
-      val2=dfB.loc[i[1]].tolist()
-      merge_list.append([])
-      merge_list[-1].append(cosine_sim(val1[0],val2[0]))
-      merge_list[-1].append(cosine_sim(val1[1],val2[1]))
-      merge_list[-1].append(cosine_sim(val1[5],val2[5]))
-      merge_list[-1].append(cosine_sim(val1[7],val2[7]))
-      merge_list[-1].append(cosine_sim(val1[11],val2[11]))
-      merge_list[-1].append(cosine_sim(val1[8],val2[8]))
-    return merge_list
+    merge_list.append([])
+      for col in columns_model:
+          val1=dfA.loc[i[0],col]
+          val2=dfB.loc[i[1],col]
+          merge_list[-1].append(cosine_sim(val1,val2))
+    merge_pd=pd.DataFrame(merge_list,columns=columns_model)
+    return merge_pd
 
 
 
@@ -531,8 +529,7 @@ with faker_data:
         dfB1_hash=dfA1_hash.copy()
         
         cand_links=candidate_links_func(dfA1,dfB1,"initials")
-        merge_list= features_encrypt(dfA1_hash,dfB1_hash,cand_links)
-        encrypt_features_df=pd.DataFrame(merge_list,columns=list(featuressour.columns))
+        encrypt_features_df=features_encrypt(dfA1_hash,dfB1_hash,cand_links)
         encrypt_features_df.index=cand_links
         encrypt_features_df1=encrypt_features_df.copy()
         if models=="Gradient Boosting" or models=="Logistic Regression":
