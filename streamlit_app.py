@@ -614,8 +614,7 @@ if name in "nN":
         st.write(dataframe2_hash.head(5))    
 
 with encrypion_not_required:
-    merge_list= features_encrypt(dataframe1_hash,dataframe2_hash,cand_links)
-    encrypt_features_df=pd.DataFrame(merge_list,columns=list(featuressour.columns))
+    encrypt_features_df= features_encrypt(dataframe1_hash,dataframe2_hash,cand_links)
     encrypt_features_df.index=cand_links
     encrypt_features_df1=encrypt_features_df.copy()
     if models=="Gradient Boosting" or models=="Logistic Regression":
@@ -632,15 +631,17 @@ with encrypion_not_required:
     show.sort_values(['Match'],ascending=False,inplace=True)
     show=show.reset_index(drop=True)
     display=0
-    for i in range(0,len(show),2):
+    for i in range(0,len(show)):
           display+=1
           if display==Display_Matches:
               break
           st.markdown('<p class="font3">Probability of Matching', unsafe_allow_html=True)
           f1=show.iloc[i]
           st.write(f1["Match"]*100)
-          d1=dfA1.iloc[[show['level_0'].values[i],show['level_1'].values[i]]]
+          d1=dataframe1.iloc[show['level_0'].values[i]]
           st.write(d1)
+          d2=dataframe2.iloc[show['level_1'].values[i]]
+          st.write(d1)        
 
     
     
