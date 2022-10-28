@@ -599,7 +599,7 @@ with upload_data:
     if name=="":
       st.warning('Please input an option.')
       st.stop()
-if name in "yY":
+if name in "nN":
     with encryption_required:
         st.markdown('<p class="font2">Encryption Part</p>', unsafe_allow_html=True)
         grams=st.slider("What would be the N Grams for Bloom Filter Encryption?", min_value=2,max_value=5,value=3,step=1)
