@@ -476,7 +476,7 @@ def features_encrypt(dfA,dfB,candidate_links):
 
 
 with faker_data:
-    name = st.text_input('Do you want to test Feature Selection model on Faker Data? Y/N',key=rn.randint(1,1000000))
+    name = st.text_input('Do you want to test Feature Selection model on Faker Data? Y/N')
     if name=="":
       st.warning('Please input an option.')
       st.stop()
