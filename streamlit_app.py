@@ -379,7 +379,7 @@ def manual_rename(df,col_names):
     if col_names==[]:
         return df
     name=""
-    name = st.text_input('Manual Review of Unmatched Column Names wanted? Y/N',key=rn.randint(1,1000000))
+    name = st.text_input('Manual Review of Unmatched Column Names wanted? Y/N',key=2)
     if name=="":
       st.warning('Please input an option.')
       st.stop()
@@ -401,7 +401,7 @@ def manual_rename(df,col_names):
           st.stop()
         if name=="Other- Enter Manually":
             name=""
-            name = st.text_input('Manual Input Name for Column',key=rn.randint(1,1000000))
+            name = st.text_input('Manual Input Name for Column',key=4)
             if name=="":
                 st.warning('Please provide column name.')
                 st.stop()
@@ -597,7 +597,7 @@ with upload_data:
     dataframe1_hash=dataframe1.copy()
     dataframe2_hash=dataframe2.copy()
     cand_links=candidate_links_func(dataframe1,dataframe2,"initials")
-    name = st.text_input('Is the uploaded data encrypted? Y/N',key=rn.randint(1,1000000))
+    name = st.text_input('Is the uploaded data encrypted? Y/N',key=3)
     if name=="":
       st.warning('Please input an option.')
       st.stop()
