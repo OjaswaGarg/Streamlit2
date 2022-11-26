@@ -600,9 +600,22 @@ with upload_data:
     
     st.write('Columns to be present')
     st.write(["First Name","Last Name","Suburb","State","Address","Date of Birth"])
-    
-    
-    
+    abs1=[]
+    abs2=[]
+    for i in ["First Name","Last Name","Suburb","State","Address","Date of Birth"]:
+        if i not in list(dataframe1_hash.columns):
+            abs1.append(i)
+        if i not in list(dataframe2_hash.columns):
+            abs2.append(i)            
+    if abs1!=[]:
+        st.write('Columns Absent in Dataset 1")
+        st.write(abs1)
+    if abs2!=[]:
+        st.write('Columns Absent in Dataset 2")
+        st.write(abs2)
+    if abs1!=[] or abs2!=[]:
+                 st.write('All Columns Required for model running not present. Please add columns and rerun.")
+                 st.stop()  
     
     name = st.text_input('Is the uploaded data encrypted? Y/N')
     if name=="":
