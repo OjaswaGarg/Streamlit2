@@ -597,6 +597,13 @@ with upload_data:
     dataframe1_hash=dataframe1.copy()
     dataframe2_hash=dataframe2.copy()
     cand_links=candidate_links_func(dataframe1,dataframe2,"initials")
+    
+    st.write('Columns to be present')
+    st.write(["First Name","Last Name","Suburb","State","Address","Date of Birth"])
+    
+    
+    
+    
     name = st.text_input('Is the uploaded data encrypted? Y/N')
     if name=="":
       st.warning('Please input an option.')
