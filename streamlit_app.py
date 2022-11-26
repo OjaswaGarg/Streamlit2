@@ -375,11 +375,11 @@ with  model_training:
            sns.heatmap(cm*100, annot=True,annot_kws={"size": 16})
            st.pyplot(fig) 
 
-def manual_rename(df,col_names):
+def manual_rename(df,col_names,key):
     if col_names==[]:
         return df
     name=""
-    name = st.text_input('Manual Review of Unmatched Column Names wanted? Y/N',key=2)
+    name = st.text_input('Manual Review of Unmatched Column Names wanted? Y/N',key=key)
     if name=="":
       st.warning('Please input an option.')
       st.stop()
@@ -401,7 +401,7 @@ def manual_rename(df,col_names):
           st.stop()
         if name=="Other- Enter Manually":
             name=""
-            name = st.text_input('Manual Input Name for Column',key=4)
+            name = st.text_input('Manual Input Name for Column')
             if name=="":
                 st.warning('Please provide column name.')
                 st.stop()
@@ -415,7 +415,7 @@ def faker_gn(sample_size):
     data_sample=data_creation(entries=sample_size)
     new_column_names,canonical_lst=column_matching(list(data_sample.columns))
     data_sample.columns=new_column_names
-    data_sample=manual_rename(data_sample,  canonical_lst)   
+    data_sample=manual_rename(data_sample,  canonical_lst,key="h1")   
     st.write(data_sample.head(5))
     dfA1=data_sample
     dfB1=data_sample
@@ -581,13 +581,13 @@ with upload_data:
     st.markdown('<p class="font3">Column Name Matching on Dataset 1', unsafe_allow_html=True)
     new_column_names,canonical_lst=column_matching(list(dataframe1.columns))
     dataframe1.columns=new_column_names
-    dataframe1=manual_rename(dataframe1,  canonical_lst)   
+    dataframe1=manual_rename(dataframe1,  canonical_lst,key="h2")   
     st.write(dataframe1.head(5))
 
     st.markdown('<p class="font3">Column Name Matching on Dataset 2', unsafe_allow_html=True)
     new_column_names,canonical_lst=column_matching(list(dataframe2.columns))
     dataframe2.columns=new_column_names
-    dataframe2=manual_rename(dataframe2,  canonical_lst)   
+    dataframe2=manual_rename(dataframe2,  canonical_lst,key="h3")   
     st.write(dataframe2.head(5))
     
     dataframe1["initials"] = (dataframe1["First Name"].str[0]  + dataframe1["Last Name"].str[0])
@@ -597,7 +597,7 @@ with upload_data:
     dataframe1_hash=dataframe1.copy()
     dataframe2_hash=dataframe2.copy()
     cand_links=candidate_links_func(dataframe1,dataframe2,"initials")
-    name = st.text_input('Is the uploaded data encrypted? Y/N',key=3)
+    name = st.text_input('Is the uploaded data encrypted? Y/N')
     if name=="":
       st.warning('Please input an option.')
       st.stop()
