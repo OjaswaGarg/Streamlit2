@@ -30,7 +30,7 @@ import matplotlib.pyplot as plt
 from recordlinkage.datasets import load_febrl4
 from recordlinkage.preprocessing import phonetic
 from recordlinkage import Compare
-from sklearn.metrics import plot_confusion_matrix, plot_roc_curve, plot_precision_recall_curve
+#from sklearn.metrics import plot_confusion_matrix, plot_roc_curve, plot_precision_recall_curve
 from sklearn.metrics import precision_score, recall_score
 import_or_install("snorkel")
 import snorkel
@@ -215,7 +215,7 @@ st.sidebar.title("Interactive")
 
 models=st.sidebar.selectbox("How would you Feature Importance to be modeled?",("Gradient Boosting", "Logistic Regression", "Weak Supervision"))
 
-metrics = st.sidebar.multiselect("What metrics to plot for the model?", ("Confusion Matrix", "ROC Curve", "Precision-Recall Curve"))
+#metrics = st.sidebar.multiselect("What metrics to plot for the model?", ("Confusion Matrix", "ROC Curve", "Precision-Recall Curve"))
 
 
 def column_matching(column_names):
@@ -287,7 +287,7 @@ with  featurest:
 
 @st.cache(suppress_st_warning=True)
 def Gradient(n_estimators,max_depth):
-        global metrics
+        #global metrics
         clf = GradientBoostingClassifier(n_estimators=n_estimators, learning_rate=0.1,max_depth=max_depth, random_state=42).fit(X_train, y_train)
         y_pred=clf.predict(X_test)
         model_final=clf
@@ -297,7 +297,7 @@ def Gradient(n_estimators,max_depth):
         return accuracy,model_final,X_test,y_test,y_pred
 @st.cache(suppress_st_warning=True)
 def Logistic(penalty,C):
-        global metrics
+        #global metrics
         lr=LogisticRegression(class_weight="balanced",penalty=penalty,C=C,solver="saga", l1_ratio=0.5)
         lr.fit(X_train,y_train)
         model_final=lr
@@ -307,7 +307,7 @@ def Logistic(penalty,C):
         return accuracy,model_final,X_test,y_test,y_pred
 @st.cache(suppress_st_warning=True)
 def WS(X_train,X_test,model_type):
-       global metrics
+       #global metrics
        L_train = applier.apply(df=X_train)
        L_test = applier.apply(df=X_test)
        if model_type=="MajorityLabelVoter":
@@ -335,7 +335,7 @@ with  model_training:
         st.write("Accuracy: ", accuracy.round(2))
         st.write("Precision: ", precision_score(y_test, y_pred, labels=class_names).round(2))
         st.write("Recall: ", recall_score(y_test, y_pred, labels=class_names).round(2)) 
-        plot_metrics(model_final,metrics,X_test,y_test)
+        #plot_metrics(model_final,metrics,X_test,y_test)
     elif models=="Logistic Regression":
         st.markdown('<p class="font2">Applying Logistic Regression to Model Feature Importance</p>', unsafe_allow_html=True)
     
@@ -351,7 +351,7 @@ with  model_training:
         st.write("Accuracy: ", accuracy.round(2))
         st.write("Precision: ", precision_score(y_test, y_pred, labels=class_names).round(2))
         st.write("Recall: ", recall_score(y_test, y_pred, labels=class_names).round(2)) 
-        plot_metrics(model_final,metrics,X_test,y_test)
+        #plot_metrics(model_final,metrics,X_test,y_test)
     elif models=="Weak Supervision":
        st.markdown('<p class="font2">Applying Snorkel to Model Feature Importance</p>', unsafe_allow_html=True)
        model_type=st.select_slider('Select model type',options=['MajorityLabelVoter', 'LabelModel'],value=('LabelModel'))
@@ -367,13 +367,13 @@ with  model_training:
        X_test1=X_test.copy()
        X_test1['CLASS']=sol
        X_test1=X_test1.loc[(X_test1.CLASS==0) | (X_test1.CLASS==1)]
-       if "Confusion Matrix" in metrics:
-           st.subheader("Confusion Matrix")
-           cm=confusion_matrix(X_test1.Target,X_test1.CLASS)
-           cm=cm/len(X_test1.CLASS)
-           fig = plt.figure(figsize=(10, 8))
-           sns.heatmap(cm*100, annot=True,annot_kws={"size": 16})
-           st.pyplot(fig) 
+       #if "Confusion Matrix" in metrics:
+       #    st.subheader("Confusion Matrix")
+       #    cm=confusion_matrix(X_test1.Target,X_test1.CLASS)
+       #    cm=cm/len(X_test1.CLASS)
+       #    fig = plt.figure(figsize=(10, 8))
+       #    sns.heatmap(cm*100, annot=True,annot_kws={"size": 16})
+       #    st.pyplot(fig) 
 
 def manual_rename(df,col_names,key):
     if col_names==[]:
